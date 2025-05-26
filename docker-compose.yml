@@ -1,0 +1,24 @@
+
+services:
+  db:
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 5432:5432
+    networks:
+      - bridge_network  
+    build: ./database/
+    restart: always
+    volumes:
+      - cardboard_postgres_data:/var/lib/postgresql/data/
+
+
+networks:
+  bridge_network:
+    driver: bridge
+
+volumes:
+    static_volume: {}
+    cardboard_postgres_data: {}
