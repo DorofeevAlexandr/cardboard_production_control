@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS productions (
     format text NOT NULL unique,
     profile text NOT NULL unique,
     material_outer text NOT NULL,
-    material_corrugationtext NOT NULL,
-    material_insidetext NOT NULL,
-    quantity INTEGER NOT NULL,
+    material_corrugation text NOT NULL,
+    material_inside text NOT NULL,
+    quantity INTEGER NOT NULL
 );
