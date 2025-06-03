@@ -13,40 +13,78 @@ class TimeStampedMixin(models.Model):
 
 
 class UUIDMixin(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True, editable=False)
 
     class Meta:
         abstract = True
 
 
+class Density(UUIDMixin, TimeStampedMixin):
+    density = models.IntegerField(verbose_name='Плотность, г/м²', default=100, validators=[MinValueValidator(0)])
+
+    def __str__(self):
+        return f'{self.density}'
+
+    class Meta:
+        db_table = 'density'
+        verbose_name = 'Плотность материала'
+        verbose_name_plural = 'Плотности материалов'
+
+
 class Material(UUIDMixin, TimeStampedMixin):
-    name = models.CharField(verbose_name='Материал', max_length=40, unique=True)
+    name = models.CharField(verbose_name='Материал', max_length=40)
+    density = models.ForeignKey('Density', verbose_name='Плотность, г/м²', related_name='materials_density', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name}-{self.density}'
+
+    class Meta:
+        db_table = 'material'
+        verbose_name = 'Материал слоя'
+        verbose_name_plural = 'Материалы слоев'
+
+
+class Profile(UUIDMixin, TimeStampedMixin):
+    name = models.CharField(verbose_name='Профиль', max_length=2)
 
     def __str__(self):
         return f'{self.name}'
 
     class Meta:
-        db_table = 'material'
-        verbose_name = 'Материал'
-        verbose_name_plural = 'Материалы'
+        db_table = 'profile'
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
+
+
+class Format(UUIDMixin, TimeStampedMixin):
+    format = models.IntegerField(verbose_name='Формат, мм',  validators=[MinValueValidator(0), MaxValueValidator(3000)])
+
+    def __str__(self):
+        return f'{self.format}'
+
+    class Meta:
+        db_table = 'format'
+        verbose_name = 'Формат'
+        verbose_name_plural = 'Форматы'
 
 
 class Order(UUIDMixin, TimeStampedMixin):
-    name = models.CharField(verbose_name='Имя заказа', max_length=40, unique=True)
-    format = models.CharField(verbose_name='Формат', max_length=40)
-    profile = models.CharField(verbose_name='Профиль', max_length=40)
-    material_outer = models.ForeignKey('Material', verbose_name='Внешний материал', related_name='orders_material_outer', on_delete=models.CASCADE)
-    material_corrugation = models.ForeignKey('Material', verbose_name='Материал гофрирования', related_name='orders_material_corrugation', on_delete=models.CASCADE)
-    material_inside = models.ForeignKey('Material', verbose_name='Внутрений материал', related_name='orders_material_inside', on_delete=models.CASCADE)
+    name = models.CharField(verbose_name='Наименование изделия', max_length=40, unique=True)
+    format = models.ForeignKey('Format', verbose_name='Формат, мм', related_name='orders_format', on_delete=models.CASCADE)
+    profile = models.ForeignKey('Profile', verbose_name='Профиль', related_name='orders_profile', on_delete=models.CASCADE)
+    material_outer = models.ForeignKey('Material', verbose_name='Наружный слой', related_name='orders_material_outer', on_delete=models.CASCADE)
+    material_corrugation = models.ForeignKey('Material', verbose_name='Гофрирующий слой', related_name='orders_material_corrugation', on_delete=models.CASCADE)
+    material_inside = models.ForeignKey('Material', verbose_name='Внутрений слой', related_name='orders_material_inside', on_delete=models.CASCADE)
 
     def __str__(self):
-        return (f'{self.name} - {self.format} - {self.profile} ({self.material_outer} {self.material_corrugation} '
+        return (f'{self.name} - {self.format} - {self.profile} ({self.material_outer} | {self.material_corrugation} | '
                 f'{self.material_inside})')
 
     class Meta:
         db_table = 'order'
-        verbose_name = 'Заказ'
-        verbose_name_plural = 'Заказы'
+        verbose_name = 'Изделие'
+        verbose_name_plural = 'Изделия'
 
 
 class Productions(UUIDMixin, TimeStampedMixin):
