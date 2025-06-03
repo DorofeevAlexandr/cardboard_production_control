@@ -39,12 +39,12 @@
 
 ---
     sudo docker compose down
-    sudo docker-compose -f docker-compose down
-    sudo docker-compose -f docker-compose up -d --build
+    sudo docker-compose -f docker-compose.yml down
+    sudo docker-compose -f docker-compose.yml up -d --build
 ---
-    docker-compose -f docker-compose.prod.yml up -d --build
-    docker-compose -f docker-compose exec web python manage.py migrate --noinput
-    docker-compose -f docker-compose exec web python manage.py collectstatic --no-input --clear
+    sudo docker-compose -f docker-compose.yml up -d --build
+    sudo docker-compose -f docker-compose.yml exec web python manage.py migrate --noinput
+    sudo docker-compose -f docker-compose.yml exec web python manage.py collectstatic --no-input --clear
 ---
 
 
