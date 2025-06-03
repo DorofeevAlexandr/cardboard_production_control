@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Productions, Order, Material
-
+from .models import Productions, Order, Material, Format
 
 admin.site.site_header = "Панель администрирования"
 admin.site.index_title = "Сменные задания"
@@ -13,6 +12,15 @@ class MaterialAdmin(admin.ModelAdmin):
     # list_filter = ('name',)
     # Поиск по полям
     search_fields = ('name',)
+
+@admin.register(Format)
+class FormatAdmin(admin.ModelAdmin):
+    # Отображение полей в списке
+    list_display = ('format', )
+    # Фильтрация в списке
+    # list_filter = ('name',)
+    # Поиск по полям
+    search_fields = ('format',)
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):

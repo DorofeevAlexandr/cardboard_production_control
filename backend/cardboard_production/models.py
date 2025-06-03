@@ -13,7 +13,8 @@ class TimeStampedMixin(models.Model):
 
 
 class UUIDMixin(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True, editable=False)
 
     class Meta:
         abstract = True
@@ -31,9 +32,21 @@ class Material(UUIDMixin, TimeStampedMixin):
         verbose_name_plural = 'Материалы слоев'
 
 
+class Format(UUIDMixin, TimeStampedMixin):
+    format = models.IntegerField(verbose_name='Формат, мм',  validators=[MinValueValidator(0), MaxValueValidator(3000)])
+
+    def __str__(self):
+        return f'{self.format}'
+
+    class Meta:
+        db_table = 'format'
+        verbose_name = 'Формат'
+        verbose_name_plural = 'Форматы'
+
+
 class Order(UUIDMixin, TimeStampedMixin):
     name = models.CharField(verbose_name='Наименование изделия', max_length=40, unique=True)
-    format = models.CharField(verbose_name='Формат', max_length=40)
+    format = models.ForeignKey('Format', verbose_name='Формат, мм', related_name='orders_format', on_delete=models.CASCADE)
     profile = models.CharField(verbose_name='Профиль', max_length=40)
     material_outer = models.ForeignKey('Material', verbose_name='Наружный слой', related_name='orders_material_outer', on_delete=models.CASCADE)
     material_corrugation = models.ForeignKey('Material', verbose_name='Гофрирующий слой', related_name='orders_material_corrugation', on_delete=models.CASCADE)
