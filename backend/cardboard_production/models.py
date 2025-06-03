@@ -20,16 +20,41 @@ class UUIDMixin(models.Model):
         abstract = True
 
 
-class Material(UUIDMixin, TimeStampedMixin):
-    name = models.CharField(verbose_name='Материал', max_length=40, unique=True)
+class Density(UUIDMixin, TimeStampedMixin):
+    density = models.IntegerField(verbose_name='Плотность, г/м²', default=100, validators=[MinValueValidator(0)])
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.density}'
+
+    class Meta:
+        db_table = 'density'
+        verbose_name = 'Плотность материала'
+        verbose_name_plural = 'Плотности материалов'
+
+
+class Material(UUIDMixin, TimeStampedMixin):
+    name = models.CharField(verbose_name='Материал', max_length=40)
+    density = models.ForeignKey('Density', verbose_name='Плотность, г/м²', related_name='materials_density', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name}-{self.density}'
 
     class Meta:
         db_table = 'material'
         verbose_name = 'Материал слоя'
         verbose_name_plural = 'Материалы слоев'
+
+
+class Profile(UUIDMixin, TimeStampedMixin):
+    name = models.CharField(verbose_name='Профиль', max_length=2)
+
+    def __str__(self):
+        return f'{self.name}'
+
+    class Meta:
+        db_table = 'profile'
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
 
 
 class Format(UUIDMixin, TimeStampedMixin):
@@ -47,13 +72,13 @@ class Format(UUIDMixin, TimeStampedMixin):
 class Order(UUIDMixin, TimeStampedMixin):
     name = models.CharField(verbose_name='Наименование изделия', max_length=40, unique=True)
     format = models.ForeignKey('Format', verbose_name='Формат, мм', related_name='orders_format', on_delete=models.CASCADE)
-    profile = models.CharField(verbose_name='Профиль', max_length=40)
+    profile = models.ForeignKey('Profile', verbose_name='Профиль', related_name='orders_profile', on_delete=models.CASCADE)
     material_outer = models.ForeignKey('Material', verbose_name='Наружный слой', related_name='orders_material_outer', on_delete=models.CASCADE)
     material_corrugation = models.ForeignKey('Material', verbose_name='Гофрирующий слой', related_name='orders_material_corrugation', on_delete=models.CASCADE)
     material_inside = models.ForeignKey('Material', verbose_name='Внутрений слой', related_name='orders_material_inside', on_delete=models.CASCADE)
 
     def __str__(self):
-        return (f'{self.name} - {self.format} - {self.profile} ({self.material_outer} {self.material_corrugation} '
+        return (f'{self.name} - {self.format} - {self.profile} ({self.material_outer} | {self.material_corrugation} | '
                 f'{self.material_inside})')
 
     class Meta:
