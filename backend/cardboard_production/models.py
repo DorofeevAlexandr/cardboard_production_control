@@ -20,21 +20,9 @@ class UUIDMixin(models.Model):
         abstract = True
 
 
-class Density(UUIDMixin, TimeStampedMixin):
-    density = models.IntegerField(verbose_name='Плотность, г/м²', default=100, validators=[MinValueValidator(0)])
-
-    def __str__(self):
-        return f'{self.density}'
-
-    class Meta:
-        db_table = 'density'
-        verbose_name = 'Плотность материала'
-        verbose_name_plural = 'Плотности материалов'
-
-
 class Material(UUIDMixin, TimeStampedMixin):
     name = models.CharField(verbose_name='Материал', max_length=40)
-    density = models.ForeignKey('Density', verbose_name='Плотность, г/м²', related_name='materials_density', on_delete=models.CASCADE)
+    density = models.IntegerField(verbose_name='Плотность, г/м²', default=100, validators=[MinValueValidator(0)])
 
     def __str__(self):
         return f'{self.name}-{self.density}'
@@ -43,6 +31,7 @@ class Material(UUIDMixin, TimeStampedMixin):
         db_table = 'material'
         verbose_name = 'Материал слоя'
         verbose_name_plural = 'Материалы слоев'
+        unique_together = ('name', 'density')
 
 
 class Profile(UUIDMixin, TimeStampedMixin):

@@ -1,13 +1,9 @@
 from django.contrib import admin
-from .models import Productions, Order, Material, Format, Density, Profile
+from .models import Productions, Order, Material, Format, Profile
 
 admin.site.site_header = "Панель администрирования"
 admin.site.index_title = "Сменные задания"
 
-@admin.register(Density)
-class FormatAdmin(admin.ModelAdmin):
-    # Отображение полей в списке
-    list_display = ('density', )
 
 @admin.register(Material)
 class MaterialAdmin(admin.ModelAdmin):
