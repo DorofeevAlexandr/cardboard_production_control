@@ -88,14 +88,21 @@ class Order(UUIDMixin, TimeStampedMixin):
 
 
 class Productions(UUIDMixin, TimeStampedMixin):
+    class Status(models.IntegerChoices):
+        IN_THE_QUEUE  = 0, 'В очереди'
+        IS_IN_PRODUCTION = 1, 'В производстве'
+        MANUFACTURED = 2, 'Изготовленно'
     order_date = models.DateField(verbose_name='Дата')
     order = models.ForeignKey('Order', verbose_name='Заказ', on_delete=models.CASCADE)
     quantity = models.IntegerField(verbose_name='Количество',  validators=[MinValueValidator(0)])
+    order_status = models.IntegerField(choices=tuple(map(lambda x: (x[0], x[1]), Status.choices)),
+                                       default=Status.IN_THE_QUEUE, verbose_name="Статус заказа")
 
     def __str__(self):
-        return f'{self.order_date} - {self.order.__str__()} - {self.order} ({self.quantity})'
+        return f'{self.order_date} - {self.order.__str__()} - {self.order} ({self.quantity}) ({self.order_status})'
 
     class Meta:
         db_table = 'productions'
         verbose_name = 'Сменное задание'
         verbose_name_plural = 'Сменные задания'
+

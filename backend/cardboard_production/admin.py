@@ -39,7 +39,7 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(Productions)
 class ProductionsAdmin(admin.ModelAdmin):
     # Отображение полей в списке
-    list_display = ('order_date', 'order', 'quantity',)
+    list_display = ('order_date', 'order', 'quantity', 'order_status')
     # Фильтрация в списке
     # list_filter = ('order_date', 'order')
     # Поиск по полям
