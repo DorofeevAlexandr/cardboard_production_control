@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Productions, Order, Material, Format, Profile
+from .models import Productions, Order, Material, Format, Profile, CuttingCardboard
 
 admin.site.site_header = "Панель администрирования"
 admin.site.index_title = "Сменные задания"
@@ -26,11 +26,12 @@ class FormatAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     # Отображение полей в списке
-    list_display = ('name', 'format', 'profile', 'material_outer', 'material_corrugation', 'material_inside')
+    list_display = ('name', 'profile', 'material_outer', 'material_corrugation', 'material_inside')
     # Фильтрация в списке
     # list_filter = ('name', 'format',)
     # Поиск по полям
     search_fields = ('name', 'format',)
+
 
 @admin.register(Productions)
 class ProductionsAdmin(admin.ModelAdmin):
@@ -41,3 +42,14 @@ class ProductionsAdmin(admin.ModelAdmin):
     # Поиск по полям
     search_fields = ('order_date', 'order')
 
+
+@admin.register(CuttingCardboard)
+class CuttingCardboardAdmin(admin.ModelAdmin):
+    # Отображение полей в списке
+    list_display = ('format', 'cutting_info')
+
+    @admin.display(description="Краткое описание")
+    def cutting_info(self, cutting: CuttingCardboard):
+
+        return (f'{cutting.order1} \n {cutting.order2} \n {cutting.order3} \n '
+                f'{cutting.order4} \n {cutting.order5} \n {cutting.order6} \n')
