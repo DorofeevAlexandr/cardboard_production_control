@@ -9,12 +9,14 @@ admin.site.index_title = "Сменные задания"
 class MaterialAdmin(admin.ModelAdmin):
     # Отображение полей в списке
     list_display = ('name', 'density', )
+    # fields = [('name', 'density')]
 
 
 @admin.register(Format)
 class FormatAdmin(admin.ModelAdmin):
     # Отображение полей в списке
     list_display = ('format', )
+    # list_display_links = None
 
 
 @admin.register(Profile)
@@ -40,13 +42,15 @@ class ProductionsAdmin(admin.ModelAdmin):
     # Фильтрация в списке
     # list_filter = ('order_date', 'order')
     # Поиск по полям
-    search_fields = ('order_date', 'order')
+    # search_fields = ('order_date', 'order')
+    date_hierarchy = "order_date"
 
 
 @admin.register(CuttingCardboard)
 class CuttingCardboardAdmin(admin.ModelAdmin):
     # Отображение полей в списке
     list_display = ('format', 'cutting_info')
+    date_hierarchy = "order1__order_date"
 
     @admin.display(description="Краткое описание")
     def cutting_info(self, cutting: CuttingCardboard):
