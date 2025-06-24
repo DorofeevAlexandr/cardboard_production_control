@@ -91,7 +91,7 @@ class Productions(UUIDMixin, TimeStampedMixin):
                                        default=Status.IN_THE_QUEUE, verbose_name="Статус заказа")
 
     def __str__(self):
-        return f'{self.order_date} - {self.order.__str__()} - {self.order} ({self.quantity}) ({self.order_status})'
+        return f'{self.order_date} - {self.order} ({self.quantity})'
 
     class Meta:
         db_table = 'productions'
@@ -101,12 +101,12 @@ class Productions(UUIDMixin, TimeStampedMixin):
 
 class CuttingCardboard(UUIDMixin, TimeStampedMixin):
     format = models.ForeignKey('Format', verbose_name='Формат, мм', related_name='orders_format', on_delete=models.CASCADE)
-    order1 = models.ForeignKey('Productions', verbose_name='Заказ 1', on_delete=models.CASCADE, related_name='cutting_order_1')
-    order2 = models.ForeignKey('Productions', verbose_name='Заказ 2', on_delete=models.CASCADE, related_name='cutting_order_2', blank=True)
-    order3 = models.ForeignKey('Productions', verbose_name='Заказ 3', on_delete=models.CASCADE, related_name='cutting_order_3', blank=True)
-    order4 = models.ForeignKey('Productions', verbose_name='Заказ 4', on_delete=models.CASCADE, related_name='cutting_order_4', blank=True)
-    order5 = models.ForeignKey('Productions', verbose_name='Заказ 5', on_delete=models.CASCADE, related_name='cutting_order_5', blank=True)
-    order6 = models.ForeignKey('Productions', verbose_name='Заказ 6', on_delete=models.CASCADE, related_name='cutting_order_6', blank=True)
+    order1 = models.ForeignKey('Productions', verbose_name='Заказ 1', on_delete=models.CASCADE, related_name='cutting_order_1', blank=True, null=True)
+    order2 = models.ForeignKey('Productions', verbose_name='Заказ 2', on_delete=models.CASCADE, related_name='cutting_order_2', blank=True, null=True)
+    order3 = models.ForeignKey('Productions', verbose_name='Заказ 3', on_delete=models.CASCADE, related_name='cutting_order_3', blank=True, null=True)
+    order4 = models.ForeignKey('Productions', verbose_name='Заказ 4', on_delete=models.CASCADE, related_name='cutting_order_4', blank=True, null=True)
+    order5 = models.ForeignKey('Productions', verbose_name='Заказ 5', on_delete=models.CASCADE, related_name='cutting_order_5', blank=True, null=True)
+    order6 = models.ForeignKey('Productions', verbose_name='Заказ 6', on_delete=models.CASCADE, related_name='cutting_order_6', blank=True, null=True)
 
     def __str__(self):
         return (f'{self.format} \n '

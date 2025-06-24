@@ -74,14 +74,52 @@ class ProductionsAdmin(admin.ModelAdmin):
         self.message_user(request, f"{count} заказов изготовлено!", messages.WARNING)
 
 
+def cutting_info_add_rows(prod: Productions):
+    if prod:
+        return (f"<tr>"
+                f"<td>{prod.order_date}</td>"
+                f"<td>{prod.order.name}</td>"
+                f"<td>{prod.order.profile}</td>"
+                f"<td>{prod.order.width}</td>"
+            f"</tr>" )
+    else:
+        return ''
+
 @admin.register(CuttingCardboard)
 class CuttingCardboardAdmin(admin.ModelAdmin):
     # Отображение полей в списке
     list_display = ('format', 'cutting_info')
     date_hierarchy = "order1__order_date"
 
-    @admin.display(description="Краткое описание")
+    @admin.display(description="Выбранные заказы")
     def cutting_info(self, cutting: CuttingCardboard):
+        html_text =  (f"<table>"
+            f"<tr>"
+                f"<td>Дата</td>"
+                f"<td>Заказ</td>"
+                f"<td>Профиль</td>"
+                f"<td>Ширина</td>"
+            f"</tr>")
+        html_text += cutting_info_add_rows(cutting.order1)
+        html_text += cutting_info_add_rows(cutting.order2)
+        html_text += cutting_info_add_rows(cutting.order3)
+        html_text += cutting_info_add_rows(cutting.order4)
+        html_text += cutting_info_add_rows(cutting.order5)
+        html_text += cutting_info_add_rows(cutting.order6)
+        html_text += f"</table>"
+        return mark_safe(html_text)
 
-        return (f'{cutting.order1} \n {cutting.order2} \n {cutting.order3} \n '
-                f'{cutting.order4} \n {cutting.order5} \n {cutting.order6} \n')
+    @admin.display(description="Обрезь / Обрезь в %")
+    def trim_info(self, cutting: CuttingCardboard):
+        width_order = (int(cutting.order1.order.width) +
+                int(cutting.order2.order.width) +
+                int(cutting.order3.order.width) +
+                int(cutting.order4.order.width) +
+                int(cutting.order5.order.width) +
+                int(cutting.order6.order.width))
+        trim = int(cutting.format.format) - width_order
+        # if cutting.format and (cutting.format != 0):
+        #     trim_percent = float(trim) / float(cutting.format) * 100
+        # else:
+        #     trim_percent = 0
+        return f"{width_order} {trim}"
