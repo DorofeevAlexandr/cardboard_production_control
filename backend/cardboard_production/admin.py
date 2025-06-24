@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
 from .models import Productions, Order, Material, Format, Profile, CuttingCardboard
 
@@ -54,7 +54,24 @@ class ProductionsAdmin(admin.ModelAdmin):
     # list_filter = ('order_date', 'order')
     # Поиск по полям
     # search_fields = ('order_date', 'order')
+    list_editable = ('order_status',)
     date_hierarchy = "order_date"
+    actions = ['set_status_queue', 'set_status_in_production', 'set_status_manufactured']
+
+    @admin.action(description="Поставить в очередь выбранные заказы")
+    def set_status_queue(self, request, queryset):
+        count = queryset.update(order_status=Productions.Status.IN_THE_QUEUE)
+        self.message_user(request, f"{count} заказов поставлено в очередь!", messages.WARNING)
+
+    @admin.action(description="Поставить в производство выбранные заказы")
+    def set_status_in_production(self, request, queryset):
+        count = queryset.update(order_status=Productions.Status.IS_IN_PRODUCTION)
+        self.message_user(request, f"{count} заказов оправлено в производство!", messages.WARNING)
+
+    @admin.action(description="Отметить изготовлеными выбранные заказы")
+    def set_status_manufactured(self, request, queryset):
+        count = queryset.update(order_status=Productions.Status.MANUFACTURED)
+        self.message_user(request, f"{count} заказов изготовлено!", messages.WARNING)
 
 
 @admin.register(CuttingCardboard)
