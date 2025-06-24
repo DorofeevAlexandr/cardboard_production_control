@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 from .models import Productions, Order, Material, Format, Profile, CuttingCardboard
 
 admin.site.site_header = "Панель администрирования"
@@ -28,11 +29,21 @@ class FormatAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     # Отображение полей в списке
-    list_display = ('name', 'profile', 'material_outer', 'material_corrugation', 'material_inside')
+    fields = ('name', 'profile', 'width', 'length', 'file', 'scheme_file', 'material_outer', 'material_corrugation',
+                    'material_inside')
+    list_display = ('name', 'profile', 'width', 'length', 'scheme_file', 'material_outer', 'material_corrugation', 'material_inside')
+    readonly_fields = ['scheme_file']
     # Фильтрация в списке
     # list_filter = ('name', 'format',)
     # Поиск по полям
     search_fields = ('name', 'format',)
+    save_on_top = True
+
+    @admin.display(description="Изображение схемы", ordering='name')
+    def scheme_file(self, order: Order):
+        if order.file:
+            return mark_safe(f"<a href='{order.file.url}'target='_blank'><img src='{order.file.url}' width=50></a>")
+        return "Без схемы"
 
 
 @admin.register(Productions)

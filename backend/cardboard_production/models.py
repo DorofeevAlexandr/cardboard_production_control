@@ -61,6 +61,10 @@ class Format(UUIDMixin, TimeStampedMixin):
 class Order(UUIDMixin, TimeStampedMixin):
     name = models.CharField(verbose_name='Наименование изделия', max_length=40, unique=True)
     profile = models.ForeignKey('Profile', verbose_name='Профиль', related_name='orders_profile', on_delete=models.CASCADE)
+    width = models.IntegerField(verbose_name='Ширина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
+    length = models.IntegerField(verbose_name='Длина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
+    file = models.FileField(upload_to="Scheme/%Y/%m/", default=None,
+                              blank=True, null=True, verbose_name="Cхема")
     material_outer = models.ForeignKey('Material', verbose_name='Наружный слой', related_name='orders_material_outer', on_delete=models.CASCADE)
     material_corrugation = models.ForeignKey('Material', verbose_name='Гофрирующий слой', related_name='orders_material_corrugation', on_delete=models.CASCADE)
     material_inside = models.ForeignKey('Material', verbose_name='Внутрений слой', related_name='orders_material_inside', on_delete=models.CASCADE)
