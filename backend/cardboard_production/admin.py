@@ -88,7 +88,7 @@ def cutting_info_add_rows(prod: Productions):
 @admin.register(CuttingCardboard)
 class CuttingCardboardAdmin(admin.ModelAdmin):
     # Отображение полей в списке
-    list_display = ('format', 'cutting_info')
+    list_display = ('format', 'cutting_info', 'trim_info')
     date_hierarchy = "order1__order_date"
 
     @admin.display(description="Выбранные заказы")
@@ -111,15 +111,19 @@ class CuttingCardboardAdmin(admin.ModelAdmin):
 
     @admin.display(description="Обрезь / Обрезь в %")
     def trim_info(self, cutting: CuttingCardboard):
-        width_order = (int(cutting.order1.order.width) +
-                int(cutting.order2.order.width) +
-                int(cutting.order3.order.width) +
-                int(cutting.order4.order.width) +
-                int(cutting.order5.order.width) +
-                int(cutting.order6.order.width))
-        trim = int(cutting.format.format) - width_order
-        # if cutting.format and (cutting.format != 0):
-        #     trim_percent = float(trim) / float(cutting.format) * 100
-        # else:
-        #     trim_percent = 0
-        return f"{width_order} {trim}"
+        cutting_format = float(cutting.format.format) if cutting.format else 0
+        width_order_1 = int(cutting.order1.order.width) if cutting.order1 else 0
+        width_order_2 = int(cutting.order2.order.width) if cutting.order2 else 0
+        width_order_3 = int(cutting.order3.order.width) if cutting.order3 else 0
+        width_order_4 = int(cutting.order4.order.width) if cutting.order4 else 0
+        width_order_5 = int(cutting.order5.order.width) if cutting.order5 else 0
+        width_order_6 = int(cutting.order6.order.width) if cutting.order6 else 0
+
+        width_order = (width_order_1 + width_order_2 + width_order_3 +
+                       width_order_4 + width_order_5 + width_order_6)
+        trim = int(cutting_format - width_order)
+        if format != 0:
+            trim_percent = int(float(trim) / float(cutting_format) * 100)
+        else:
+            trim_percent = 0
+        return f"{trim} / {trim_percent}%"
