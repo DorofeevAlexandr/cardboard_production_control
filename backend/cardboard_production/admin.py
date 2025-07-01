@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
 from .models import Productions, Order, Material, Format, Profile, CuttingCardboard
@@ -31,7 +33,7 @@ class OrderAdmin(admin.ModelAdmin):
     # Отображение полей в списке
     fields = ('name', 'profile', 'width', 'length', 'file', 'scheme_file', 'material_outer', 'material_corrugation',
                     'material_inside')
-    list_display = ('name', 'profile', 'width', 'length', 'scheme_file', 'material_outer', 'material_corrugation', 'material_inside')
+    list_display = ('name', 'profile', 'width', 'length', 'square', 'scheme_file', 'material_outer', 'material_corrugation', 'material_inside')
     readonly_fields = ['scheme_file']
     # Фильтрация в списке
     # list_filter = ('name', 'format',)
@@ -44,6 +46,15 @@ class OrderAdmin(admin.ModelAdmin):
         if order.file:
             return mark_safe(f"<a href='{order.file.url}'target='_blank'><img src='{order.file.url}' width=50></a>")
         return "Без схемы"
+
+    @admin.display(description="Площадь м²")
+    def square(self, order: Order):
+        if order.width and order.length:
+            square = order.width * order.length
+            square = Decimal(square) / (1000 * 1000)
+        else:
+            square = 0
+        return square
 
 
 @admin.register(Productions)
