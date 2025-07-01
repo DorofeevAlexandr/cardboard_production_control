@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 import uuid
 
+from .custom_validator import custom_file_validator
+
 
 class TimeStampedMixin(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -64,7 +66,7 @@ class Order(UUIDMixin, TimeStampedMixin):
     width = models.IntegerField(verbose_name='Ширина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
     length = models.IntegerField(verbose_name='Длина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
     file = models.FileField(upload_to="Scheme/%Y/%m/", default=None,
-                              blank=True, null=True, verbose_name="Cхема")
+                              blank=True, null=True, verbose_name="Cхема", validators=[custom_file_validator])
     material_outer = models.ForeignKey('Material', verbose_name='Наружный слой', related_name='orders_material_outer', on_delete=models.CASCADE)
     material_corrugation = models.ForeignKey('Material', verbose_name='Гофрирующий слой', related_name='orders_material_corrugation', on_delete=models.CASCADE)
     material_inside = models.ForeignKey('Material', verbose_name='Внутрений слой', related_name='orders_material_inside', on_delete=models.CASCADE)
