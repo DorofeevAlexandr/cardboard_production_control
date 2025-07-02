@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 import uuid
@@ -65,11 +67,25 @@ class Order(UUIDMixin, TimeStampedMixin):
     profile = models.ForeignKey('Profile', verbose_name='Профиль', related_name='orders_profile', on_delete=models.CASCADE)
     width = models.IntegerField(verbose_name='Ширина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
     length = models.IntegerField(verbose_name='Длина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
+    area = models.FloatField(verbose_name="Площадь м²", default=0)
     file = models.FileField(upload_to="Scheme/%Y/%m/", default=None,
                               blank=True, null=True, verbose_name="Cхема", validators=[custom_file_validator])
     material_outer = models.ForeignKey('Material', verbose_name='Наружный слой', related_name='orders_material_outer', on_delete=models.CASCADE)
     material_corrugation = models.ForeignKey('Material', verbose_name='Гофрирующий слой', related_name='orders_material_corrugation', on_delete=models.CASCADE)
     material_inside = models.ForeignKey('Material', verbose_name='Внутрений слой', related_name='orders_material_inside', on_delete=models.CASCADE)
+
+    def calculate_area(self):
+        if self.width and self.length:
+            square = self.width * self.length
+            square = Decimal(square) / (1000 * 1000)
+            square = round(square, 3)
+        else:
+            square = 0
+        return square
+
+    def save(self, *args, **kwargs):
+        self.area = self.calculate_area()
+        super(Order, self).save(*args, **kwargs)
 
     def __str__(self):
         return (f'{self.name} - {self.profile} ({self.material_outer} | {self.material_corrugation} | '
