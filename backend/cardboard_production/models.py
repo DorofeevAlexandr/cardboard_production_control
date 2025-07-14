@@ -70,6 +70,10 @@ class Order(UUIDMixin, TimeStampedMixin):
     area = models.FloatField(verbose_name="Площадь м²", default=0)
     file = models.FileField(upload_to="Scheme/%Y/%m/", default=None,
                               blank=True, null=True, verbose_name="Cхема", validators=[custom_file_validator])
+    design_file = models.FileField(upload_to="Design/%Y/%m/", default=None,
+                            blank=True, null=True, verbose_name="Дизайн", validators=[custom_file_validator])
+    equipment_file = models.FileField(upload_to="Equipment/%Y/%m/", default=None,
+                            blank=True, null=True, verbose_name="Комплектация", validators=[custom_file_validator])
     material_outer = models.ForeignKey('Material', verbose_name='Наружный слой', related_name='orders_material_outer', on_delete=models.CASCADE)
     material_corrugation = models.ForeignKey('Material', verbose_name='Гофрирующий слой', related_name='orders_material_corrugation', on_delete=models.CASCADE)
     material_inside = models.ForeignKey('Material', verbose_name='Внутрений слой', related_name='orders_material_inside', on_delete=models.CASCADE)
