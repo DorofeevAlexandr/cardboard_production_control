@@ -31,10 +31,13 @@ class FormatAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     # Отображение полей в списке
-    fields = ('name', 'profile', 'width', 'length', 'area', 'file', 'scheme_file', 'material_outer', 'material_corrugation',
-                    'material_inside')
-    list_display = ('name', 'profile', 'width', 'length', 'area', 'scheme_file', 'material_outer', 'material_corrugation', 'material_inside')
-    readonly_fields = ['area', 'scheme_file']
+    fields = ('name', 'profile', 'width', 'length', 'area',
+              'file', 'scheme_file', 'design_file', 'view_design_file', 'equipment_file', 'view_equipment_file',
+              'material_outer', 'material_corrugation', 'material_inside')
+    list_display = ('name', 'profile', 'width', 'length', 'area',
+                    'scheme_file', 'view_design_file', 'view_equipment_file',
+                    'material_outer', 'material_corrugation', 'material_inside')
+    readonly_fields = ['area', 'scheme_file', 'view_design_file', 'view_equipment_file']
     # Фильтрация в списке
     # list_filter = ('name', 'format',)
     # Поиск по полям
@@ -46,6 +49,18 @@ class OrderAdmin(admin.ModelAdmin):
         if order.file:
             return mark_safe(f"<a href='{order.file.url}'target='_blank'><img src='{order.file.url}' width=50></a>")
         return "Без схемы"
+
+    @admin.display(description="Дизайн", ordering='name')
+    def view_design_file(self, order: Order):
+        if order.design_file:
+            return mark_safe(f"<a href='{order.design_file.url}'target='_blank'><img src='{order.design_file.url}' width=50></a>")
+        return "Без дизайна"
+
+    @admin.display(description="Комплектация", ordering='name')
+    def view_equipment_file(self, order: Order):
+        if order.equipment_file:
+            return mark_safe(f"<a href='{order.equipment_file.url}'target='_blank'><img src='{order.equipment_file.url}' width=50></a>")
+        return "Без комплектации"
 
 
 @admin.register(Productions)
