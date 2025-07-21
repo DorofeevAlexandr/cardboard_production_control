@@ -31,24 +31,31 @@ class FormatAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     # Отображение полей в списке
-    fields = ('name', 'profile', 'width', 'length', 'area',
-              'file', 'scheme_file', 'design_file', 'view_design_file', 'equipment_file', 'view_equipment_file',
+    fields = ('name', 'profile', 'width', 'length', 'area', 'set_area',
+              ('scheme_file', 'file',), ('scheme_file_2', 'file2',),
+              ('view_design_file', 'design_file',), ('view_equipment_file', 'equipment_file',),
               'material_outer', 'material_corrugation', 'material_inside')
-    list_display = ('name', 'profile', 'width', 'length', 'area',
-                    'scheme_file', 'view_design_file', 'view_equipment_file',
+    list_display = ('name', 'profile', 'width', 'length', 'area', 'set_area',
+                    'scheme_file', 'scheme_file_2', 'view_design_file', 'view_equipment_file',
                     'material_outer', 'material_corrugation', 'material_inside')
-    readonly_fields = ['area', 'scheme_file', 'view_design_file', 'view_equipment_file']
+    readonly_fields = ['area', 'scheme_file', 'scheme_file_2', 'view_design_file', 'view_equipment_file']
     # Фильтрация в списке
     # list_filter = ('name', 'format',)
     # Поиск по полям
-    search_fields = ('name', 'format',)
+    search_fields = ('name', )
     # save_on_top = True
 
-    @admin.display(description="Изображение схемы", ordering='name')
+    @admin.display(description="Чертёж 1", ordering='name')
     def scheme_file(self, order: Order):
         if order.file:
             return mark_safe(f"<a href='{order.file.url}'target='_blank'><img src='{order.file.url}' width=50></a>")
-        return "Без схемы"
+        return "Без чертежа"
+
+    @admin.display(description="Чертёж 2", ordering='name')
+    def scheme_file_2(self, order: Order):
+        if order.file2:
+            return mark_safe(f"<a href='{order.file2.url}'target='_blank'><img src='{order.file2.url}' width=50></a>")
+        return "Без чертежа"
 
     @admin.display(description="Дизайн", ordering='name')
     def view_design_file(self, order: Order):

@@ -29,7 +29,18 @@
     $ docker-compose exec web python manage.py createsuperuser 
 ---
 
+# Дополнителные команды:
 
+Остановить все контейнры
+
+    sudo docker stop $(sudo docker ps -aq)
+
+Удалить все контейнеры
+
+    sudo docker rm $(sudo docker ps -aq)
+
+
+---
     sudo docker compose down
     sudo docker compose build
     sudo docker compose up -d
