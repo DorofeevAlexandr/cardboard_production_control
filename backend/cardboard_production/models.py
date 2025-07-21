@@ -95,8 +95,7 @@ class Order(UUIDMixin, TimeStampedMixin):
         super(Order, self).save(*args, **kwargs)
 
     def __str__(self):
-        return (f'{self.name} - {self.profile} ({self.material_outer} | {self.material_corrugation} | '
-                f'{self.material_inside})')
+        return f'{self.name}'
 
     class Meta:
         db_table = 'order'
