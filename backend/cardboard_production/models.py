@@ -65,6 +65,14 @@ class Format(UUIDMixin, TimeStampedMixin):
 class Order(UUIDMixin, TimeStampedMixin):
     name = models.CharField(verbose_name='Наименование изделия', max_length=40, unique=True)
     profile = models.ForeignKey('Profile', verbose_name='Профиль', related_name='orders_profile', on_delete=models.CASCADE)
+    color_count = models.IntegerField(verbose_name='Печать', default=0,
+                                      choices=[(0, '-'),
+                                               (1, '1'),
+                                               (2, '2'),
+                                               (3, '3'),])
+    stamp = models.BooleanField(verbose_name='Штамп', default=False,
+                                choices=[(False, '-'),
+                                         (True, '+')])
     width = models.IntegerField(verbose_name='Ширина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
     length = models.IntegerField(verbose_name='Длина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
     area = models.FloatField(verbose_name="Площадь м²", default=0)
