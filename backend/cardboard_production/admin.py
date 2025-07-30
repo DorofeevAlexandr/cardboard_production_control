@@ -162,7 +162,8 @@ class StatementAdmin(admin.ModelAdmin):
     list_display = ('statement_date', 'order',
                     'color_count', 'stamp', 'width', 'length', 'area',
                     'statement_start_time', 'statement_end_time', 'minutes', 'downtime',
-                    'quantity_sent_production', 'quantity_manufactured')
+                    'quantity_sent_production', 'quantity_manufactured',
+                    'defects_percent', )
     # readonly_fields = ['order__stamp', 'order__width', 'order__length', 'order__area',]
     # Фильтрация в списке
     # list_filter = ('name', 'format',)
@@ -188,7 +189,6 @@ class StatementAdmin(admin.ModelAdmin):
             return statement.order.width
         return "-"
 
-
     @admin.display(description="Длина, мм")
     def length(self, statement: Statement):
         if statement.order:
@@ -208,6 +208,18 @@ class StatementAdmin(admin.ModelAdmin):
                 start_time = dt.datetime.combine(statement.statement_date, statement.statement_start_time)
                 end_time = dt.datetime.combine(statement.statement_date, statement.statement_end_time)
                 return int((end_time - start_time).total_seconds() // 60)
+            else:
+                return  "-"
+        except:
+            return "-"
+
+    @admin.display(description="Брак, %")
+    def defects_percent(self, statement: Statement):
+        try:
+            if statement.quantity_sent_production and statement.quantity_manufactured:
+                k_defects = (statement.quantity_sent_production - statement.quantity_manufactured) / statement.quantity_manufactured
+                result = round(k_defects * 100.0, 1)
+                return result
             else:
                 return  "-"
         except:
