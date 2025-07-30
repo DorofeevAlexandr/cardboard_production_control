@@ -163,7 +163,7 @@ class StatementAdmin(admin.ModelAdmin):
                     'color_count', 'stamp', 'width', 'length', 'area',
                     'statement_start_time', 'statement_end_time', 'minutes', 'downtime',
                     'quantity_sent_production', 'quantity_manufactured',
-                    'defects_percent', )
+                    'defects_percent', 'speed_manufactured', )
     # readonly_fields = ['order__stamp', 'order__width', 'order__length', 'order__area',]
     # Фильтрация в списке
     # list_filter = ('name', 'format',)
@@ -201,8 +201,7 @@ class StatementAdmin(admin.ModelAdmin):
             return statement.order.area
         return "-"
 
-    @admin.display(description="Минуты")
-    def minutes(self, statement: Statement):
+    def get_minutes(self, statement: Statement):
         try:
             if statement.statement_end_time and statement.statement_start_time:
                 start_time = dt.datetime.combine(statement.statement_date, statement.statement_start_time)
@@ -213,6 +212,10 @@ class StatementAdmin(admin.ModelAdmin):
         except:
             return "-"
 
+    @admin.display(description="Минуты")
+    def minutes(self, statement: Statement):
+        return self.get_minutes(statement)
+
     @admin.display(description="Брак, %")
     def defects_percent(self, statement: Statement):
         try:
@@ -220,6 +223,16 @@ class StatementAdmin(admin.ModelAdmin):
                 k_defects = (statement.quantity_sent_production - statement.quantity_manufactured) / statement.quantity_manufactured
                 result = round(k_defects * 100.0, 1)
                 return result
+            else:
+                return  "-"
+        except:
+            return "-"
+
+    @admin.display(description="Произведено, шт/мин")
+    def speed_manufactured(self, statement: Statement):
+        try:
+            if statement.quantity_manufactured:
+                return round(statement.quantity_manufactured / self.get_minutes(statement))
             else:
                 return  "-"
         except:
