@@ -1,8 +1,9 @@
 from decimal import Decimal
 
+import datetime as dt
 from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
-from .models import Productions, Order, Material, Format, Profile, CuttingCardboard
+from .models import Productions, Order, Material, Format, Profile, CuttingCardboard, Statement
 
 admin.site.site_header = "Панель администрирования"
 admin.site.index_title = "Сменные задания"
@@ -151,3 +152,63 @@ class CuttingCardboardAdmin(admin.ModelAdmin):
         else:
             trim_percent = 0
         return f"{trim} / {trim_percent}%"
+
+
+@admin.register(Statement)
+class StatementAdmin(admin.ModelAdmin):
+    # Отображение полей в списке
+    fields = ('statement_date', 'order', 'statement_start_time',
+              'statement_end_time', 'downtime', 'quantity_sent_production', 'quantity_manufactured')
+    list_display = ('statement_date', 'order',
+                    'color_count', 'stamp', 'width', 'length', 'area',
+                    'statement_start_time', 'statement_end_time', 'minutes', 'downtime',
+                    'quantity_sent_production', 'quantity_manufactured')
+    # readonly_fields = ['order__stamp', 'order__width', 'order__length', 'order__area',]
+    # Фильтрация в списке
+    # list_filter = ('name', 'format',)
+    # Поиск по полям
+    # search_fields = ('name', )
+    # save_on_top = True
+
+    @admin.display(description="Печать")
+    def color_count(self, statement: Statement):
+        if statement.order:
+            return statement.order.color_count
+        return "-"
+
+    @admin.display(description="Штамп")
+    def stamp(self, statement: Statement):
+        if statement.order:
+            return statement.order.stamp
+        return "-"
+
+    @admin.display(description="Ширина, мм")
+    def width(self, statement: Statement):
+        if statement.order:
+            return statement.order.width
+        return "-"
+
+
+    @admin.display(description="Длина, мм")
+    def length(self, statement: Statement):
+        if statement.order:
+            return statement.order.length
+        return "-"
+
+    @admin.display(description="Площадь, м²")
+    def area(self, statement: Statement):
+        if statement.order:
+            return statement.order.area
+        return "-"
+
+    @admin.display(description="Минуты")
+    def minutes(self, statement: Statement):
+        try:
+            if statement.statement_end_time and statement.statement_start_time:
+                start_time = dt.datetime.combine(statement.statement_date, statement.statement_start_time)
+                end_time = dt.datetime.combine(statement.statement_date, statement.statement_end_time)
+                return int((end_time - start_time).total_seconds() // 60)
+            else:
+                return  "-"
+        except:
+            return "-"
