@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 import datetime as dt
 from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
@@ -170,17 +168,23 @@ class StatementAdmin(admin.ModelAdmin):
     # Поиск по полям
     # search_fields = ('name', )
     # save_on_top = True
+    date_hierarchy = "statement_date"
 
     @admin.display(description="Печать")
     def color_count(self, statement: Statement):
         if statement.order:
+            if statement.order.color_count == 0:
+                return '-'
             return statement.order.color_count
         return "-"
 
     @admin.display(description="Штамп")
     def stamp(self, statement: Statement):
         if statement.order:
-            return statement.order.stamp
+            if statement.order.stamp:
+                return '+'
+            else:
+                return '-'
         return "-"
 
     @admin.display(description="Ширина, мм")
