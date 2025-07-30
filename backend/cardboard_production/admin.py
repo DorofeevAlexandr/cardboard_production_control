@@ -163,7 +163,7 @@ class StatementAdmin(admin.ModelAdmin):
                     'color_count', 'stamp', 'width', 'length', 'area',
                     'statement_start_time', 'statement_end_time', 'minutes', 'downtime',
                     'quantity_sent_production', 'quantity_manufactured',
-                    'defects_percent', 'speed_manufactured', )
+                    'defects_percent', 'speed_manufactured', 'manufactured_area')
     # readonly_fields = ['order__stamp', 'order__width', 'order__length', 'order__area',]
     # Фильтрация в списке
     # list_filter = ('name', 'format',)
@@ -235,5 +235,15 @@ class StatementAdmin(admin.ModelAdmin):
                 return round(statement.quantity_manufactured / self.get_minutes(statement))
             else:
                 return  "-"
+        except:
+            return "-"
+
+    @admin.display(description="Общая площадь, м²")
+    def manufactured_area(self, statement: Statement):
+        try:
+            if statement.order and statement.quantity_manufactured:
+                area =  statement.order.width * statement.order.length * statement.quantity_manufactured / (1000*1000)
+                return round(area)
+            return "-"
         except:
             return "-"
