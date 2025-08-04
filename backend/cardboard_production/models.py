@@ -65,6 +65,14 @@ class Format(UUIDMixin, TimeStampedMixin):
 class Order(UUIDMixin, TimeStampedMixin):
     name = models.CharField(verbose_name='Наименование изделия', max_length=40, unique=True)
     profile = models.ForeignKey('Profile', verbose_name='Профиль', related_name='orders_profile', on_delete=models.CASCADE)
+    color_count = models.IntegerField(verbose_name='Печать', default=0,
+                                      choices=[(0, '-'),
+                                               (1, '1'),
+                                               (2, '2'),
+                                               (3, '3'),])
+    stamp = models.BooleanField(verbose_name='Штамп', default=False,
+                                choices=[(False, '-'),
+                                         (True, '+')])
     width = models.IntegerField(verbose_name='Ширина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
     length = models.IntegerField(verbose_name='Длина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
     area = models.FloatField(verbose_name="Площадь м²", default=0)
@@ -141,3 +149,21 @@ class CuttingCardboard(UUIDMixin, TimeStampedMixin):
         db_table = 'cutting_cardboard'
         verbose_name = 'Раскрой'
         verbose_name_plural = 'Раскрой'
+
+
+class Statement(UUIDMixin, TimeStampedMixin):
+    statement_date = models.DateField(verbose_name='Дата')
+    statement_start_time = models.TimeField(verbose_name='Начало')
+    statement_end_time = models.TimeField(verbose_name='Окончание')
+    downtime = models.IntegerField(verbose_name='Простой, мин', validators=[MinValueValidator(0)], default=0)
+    order = models.ForeignKey('Order', verbose_name='Продукция', on_delete=models.CASCADE, related_name='statement_order')
+    quantity_sent_production = models.IntegerField(verbose_name='Пропущено', validators=[MinValueValidator(0)], default=0)
+    quantity_manufactured = models.IntegerField(verbose_name='Изготовлено',  validators=[MinValueValidator(0)], default=0)
+
+    def __str__(self):
+        return f'{self.statement_date} - {self.order}'
+
+    class Meta:
+        db_table = 'statement'
+        verbose_name = 'Ведомость'
+        verbose_name_plural = 'Ведомости'
