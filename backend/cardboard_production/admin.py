@@ -22,7 +22,7 @@ class FormatAdmin(admin.ModelAdmin):
 
 
 @admin.register(Profile)
-class FormatAdmin(admin.ModelAdmin):
+class ProfileAdmin(admin.ModelAdmin):
     # Отображение полей в списке
     list_display = ('name', )
 
