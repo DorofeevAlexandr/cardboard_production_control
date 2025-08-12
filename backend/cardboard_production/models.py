@@ -77,13 +77,13 @@ class Order(UUIDMixin, TimeStampedMixin):
     length = models.IntegerField(verbose_name='Длина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
     area = models.FloatField(verbose_name="Площадь м²", default=0)
     set_area = models.DecimalField(verbose_name="Площадь комплекта м²", max_digits=5, decimal_places=2, default=0)
-    file = models.FileField(upload_to="Scheme/%Y/%m/", default=None,
+    file = models.FileField(upload_to="Scheme/%Y/%m/%d/", default=None,
                               blank=True, null=True, verbose_name="", validators=[custom_file_validator])
-    file2 = models.FileField(upload_to="Scheme2/%Y/%m/", default=None,
+    file2 = models.FileField(upload_to="Scheme2/%Y/%m/%d/", default=None,
                             blank=True, null=True, verbose_name="", validators=[custom_file_validator])
-    design_file = models.FileField(upload_to="Design/%Y/%m/", default=None,
+    design_file = models.FileField(upload_to="Design/%Y/%m/%d/", default=None,
                             blank=True, null=True, verbose_name="", validators=[custom_file_validator])
-    equipment_file = models.FileField(upload_to="Equipment/%Y/%m/", default=None,
+    equipment_file = models.FileField(upload_to="Equipment/%Y/%m/%d/", default=None,
                             blank=True, null=True, verbose_name="", validators=[custom_file_validator])
     material_outer = models.ForeignKey('Material', verbose_name='Наружный слой', related_name='orders_material_outer', on_delete=models.CASCADE)
     material_corrugation = models.ForeignKey('Material', verbose_name='Гофрирующий слой', related_name='orders_material_corrugation', on_delete=models.CASCADE)
