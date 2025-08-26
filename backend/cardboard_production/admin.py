@@ -53,19 +53,19 @@ class OrderAdmin(admin.ModelAdmin):
     @admin.display(description="Чертёж 2", ordering='name')
     def scheme_file_2(self, order: Order):
         if order.file2:
-            return mark_safe(f"<a href='{order.file2.url}'target='_blank'><&#128194;></a>")
+            return mark_safe(f"<a href='{order.file2.url}'target='_self'><&#128194;></a>")
         return "Без чертежа"
 
     @admin.display(description="Дизайн", ordering='name')
     def view_design_file(self, order: Order):
         if order.design_file:
-            return mark_safe(f"<a href='{order.design_file.url}'target='_blank'><&#128194;></a>")
+            return mark_safe(f"<a href='{order.design_file.url}'target='_parent'><&#128194;></a>")
         return "Без дизайна"
 
     @admin.display(description="Комплектация", ordering='name')
     def view_equipment_file(self, order: Order):
         if order.equipment_file:
-            return mark_safe(f"<a href='{order.equipment_file.url}'target='_blank'><&#128194;></a>")
+            return mark_safe(f"<a href='{order.equipment_file.url}'target='_top'><&#128194;></a>")
         return "Без комплектации"
 
 
