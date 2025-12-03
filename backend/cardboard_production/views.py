@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpRespons
 
 
 def tuning(request):
-    return HttpResponse("Tuning")
+    return HttpResponse("<h1>Tuning</h1>")
 
 def index(request):
     return redirect('/admin')
