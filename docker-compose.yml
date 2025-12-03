@@ -46,6 +46,18 @@ services:
       - web
     restart: always
 
+  cloudpub:
+    image: cloudpub/cloudpub:latest
+    restart: always
+    environment:
+      - TOKEN=${CLOUDPUB_TOKEN}
+      - HTTP=nginx:80
+    command: run
+    depends_on:
+      - nginx
+    volumes:
+      - cloudpub-config:/home/cloudpub
+
 
 networks:
   bridge_network:
@@ -55,3 +67,4 @@ volumes:
     static_volume: {}
     media_volume: {}
     cardboard_postgres_data: {}
+    cloudpub-config: {}
