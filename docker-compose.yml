@@ -53,6 +53,8 @@ services:
     image: nginx:alpine
     volumes:
       - ./html:/usr/share/nginx/html
+    networks:
+      - bridge_network
     expose:
       - "80"
 
