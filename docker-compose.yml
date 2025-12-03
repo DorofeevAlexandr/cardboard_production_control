@@ -57,6 +57,8 @@ services:
       - nginx
     volumes:
       - cloudpub-config:/home/cloudpub
+    networks:
+      - bridge_network
 
 
 networks:
