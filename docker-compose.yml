@@ -45,6 +45,8 @@ services:
     depends_on:
       - web
     restart: always
+    expose:
+      - "80"
 
   cloudpub:
     image: cloudpub/cloudpub:latest
