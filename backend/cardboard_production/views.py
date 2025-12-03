@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 
 
+def tuning(request):
+    return HttpResponse("Tuning")
+
 def index(request):
     return redirect('/admin')
 
