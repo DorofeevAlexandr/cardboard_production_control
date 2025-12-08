@@ -56,14 +56,14 @@ services:
     networks:
       - bridge_network
     expose:
-      - "80"
+      - "8000"
 
   cloudpub:
     image: cloudpub/cloudpub:latest
     restart: always
     environment:
       - TOKEN=${CLOUDPUB_TOKEN}
-      - HTTP=nginx:80, test_web_app:80
+      - HTTP=nginx:80, test_web_app:8000
     command: run
     depends_on:
       - nginx
