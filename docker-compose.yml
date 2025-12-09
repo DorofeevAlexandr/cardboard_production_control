@@ -63,7 +63,7 @@ services:
     environment:
       - TOKEN=${CLOUDPUB_TOKEN}
       - HTTP=nginx:80, flask_web:5000
-      - tcp=22
+      - tcp=localhost:22
     command: run
     volumes:
       - cloudpub-config:/home/cloudpub
