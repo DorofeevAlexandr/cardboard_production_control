@@ -64,8 +64,6 @@ services:
       - TOKEN=${CLOUDPUB_TOKEN}
       - HTTP=nginx:80, flask_web:5000
     command: run
-    depends_on:
-      - nginx
     volumes:
       - cloudpub-config:/home/cloudpub
     networks:
