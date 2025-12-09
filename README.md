@@ -49,14 +49,13 @@
     sudo docker-compose logs -f
 
 ---
-    sudo docker compose down
-    sudo docker-compose -f docker-compose.yml down
-    sudo docker-compose -f docker-compose.yml up -d --build
----
+Групповой запрос на обновление ПО
+
+    sudo git pull
+    sudo docker stop $(sudo docker ps -aq)
+    sudo docker rm $(sudo docker ps -aq)
     sudo docker-compose -f docker-compose.yml up -d --build
     sudo docker-compose -f docker-compose.yml exec web python manage.py migrate --noinput
     sudo docker-compose -f docker-compose.yml exec web python manage.py collectstatic --no-input --clear
----
-
 
 
