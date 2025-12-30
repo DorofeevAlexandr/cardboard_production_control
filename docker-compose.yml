@@ -53,7 +53,7 @@ services:
     restart: always
     environment:
       - TOKEN=${CLOUDPUB_TOKEN}
-      - HTTP=nginx:80, flask_web:5000
+      - HTTP=nginx:80
     command: run
     volumes:
       - cloudpub-config:/home/cloudpub
