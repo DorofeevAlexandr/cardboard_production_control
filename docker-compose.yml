@@ -48,15 +48,6 @@ services:
     expose:
       - "80"
 
-  flask_web:
-      container_name: flask_web_container
-      build: ./flask_web
-      ports:
-        - 5000:5000
-      restart: unless-stopped
-      networks:
-        - bridge_network
-
   cloudpub:
     image: cloudpub/cloudpub:latest
     restart: always
