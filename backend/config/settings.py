@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'pdf_view',
     'cardboard_production.apps.CardboardProductionConfig',
+
 ]
 
 MIDDLEWARE = [
