@@ -63,7 +63,7 @@ class Format(UUIDMixin, TimeStampedMixin):
 
 
 class Order(UUIDMixin, TimeStampedMixin):
-    name = models.CharField(verbose_name='Наименование изделия', max_length=40, unique=True)
+    name = models.CharField(verbose_name='Наименование изделия', max_length=60, unique=True)
     profile = models.ForeignKey('Profile', verbose_name='Профиль', related_name='orders_profile', on_delete=models.CASCADE)
     color_count = models.IntegerField(verbose_name='Печать', default=0,
                                       choices=[(0, '-'),
