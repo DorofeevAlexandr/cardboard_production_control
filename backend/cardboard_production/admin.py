@@ -47,7 +47,7 @@ class OrderAdmin(admin.ModelAdmin):
     @admin.display(description="Чертёж 1", ordering='name')
     def scheme_file(self, order: Order):
         if order.file:
-            return mark_safe(f"<a href='{order.file.url}'target='_self'><&#128194;></a>")
+            return mark_safe(f"<a href='/open_pdf_file_view{order.file.url}'target='_self'><&#128194;></a>")
         return "Без чертежа"
 
     @admin.display(description="Чертёж 2", ordering='name')
