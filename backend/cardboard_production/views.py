@@ -13,8 +13,8 @@ def page_not_found(request, exception):
     return HttpResponseNotFound("<h1>Страница не найдена</h1>")
 
 def open_pdf_file_view(request, filename):
-    try:
-        return FileResponse(open(filename, 'rb'))
-        # , content_type = 'application/pdf'
-    except FileNotFoundError:
-        raise Http404()
+    data = {
+        'title': filename,
+        'filename': f'/{filename}',
+    }
+    return render(request, 'cardboard_production/open_pdf.html', context=data)
