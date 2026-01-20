@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+
+</body>
+</html>
+
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>{{title}}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- import plugin script -->
+
+</head>
+<body>
+<table class="table-page" border=0 cellpadding="0" cellspacing="0">
+<tr><td valign=top>
+
+<table class="table-content" border=0 cellpadding="0" cellspacing="0">
+<tr>
+
+<td valign="top" class="content">
+
+<!-- Блок контента -->
+	<div class="content-text">
+{% block content %}
+{% endblock %}
+	</div>
+<!-- Конец блока контента -->
+
+</td></tr></table>
+</td></tr>
+<!-- Footer -->
+<tr><td valign=top>
+	<div id="footer">
+		<p>     </p>
+	</div>
+</td></tr></table>
+<!-- Конец footer'а и страницы -->
+</body>
+</html>
