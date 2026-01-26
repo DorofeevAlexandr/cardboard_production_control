@@ -78,7 +78,6 @@ class Order(UUIDMixin, TimeStampedMixin):
     area = models.FloatField(verbose_name="Площадь м²", default=0)
     quantity_products_per_stamp = models.IntegerField(verbose_name='Кол-во изделий на штампе', default=1,
                                  validators=[MinValueValidator(1), MaxValueValidator(10)])
-    area_one_product = models.FloatField(verbose_name="Площадь 1 изделия м²", default=0)
     set_area = models.DecimalField(verbose_name="Площадь комплекта м²", max_digits=5, decimal_places=2, default=0)
     file = models.FileField(upload_to="Scheme/%Y/%m/%d/", default=None,
                               blank=True, null=True, verbose_name="", validators=[custom_file_validator])
@@ -94,21 +93,17 @@ class Order(UUIDMixin, TimeStampedMixin):
 
     def calculate_area(self):
         if self.width and self.length:
+            quantity = self.quantity_products_per_stamp if self.quantity_products_per_stamp != 0 else 1
             square = self.width * self.length
+            square = square / quantity
             square = Decimal(square) / (1000 * 1000)
             square = round(square, 3)
         else:
             square = 0
         return square
 
-    def calculate_area_one_product(self):
-        quantity = self.quantity_products_per_stamp if self.quantity_products_per_stamp != 0 else 1
-        area_one_product = Decimal(self.area / quantity)
-        return round(area_one_product, 3)
-
     def save(self, *args, **kwargs):
         self.area = self.calculate_area()
-        self.area_one_product = self.calculate_area_one_product()
         super(Order, self).save(*args, **kwargs)
 
     def __str__(self):

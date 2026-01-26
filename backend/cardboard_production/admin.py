@@ -30,15 +30,14 @@ class ProfileAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     # Отображение полей в списке
-    fields = ('name', 'profile', 'color_count', 'stamp', 'width', 'length', 'area',
-              ('area_one_product', 'quantity_products_per_stamp',), 'set_area',
+    fields = ('name', 'profile', 'color_count', 'stamp', 'width', 'length', 'quantity_products_per_stamp', 'area', 'set_area',
               ('scheme_file', 'file',), ('scheme_file_2', 'file2',),
               ('view_design_file', 'design_file',), ('view_equipment_file', 'equipment_file',),
               'material_outer', 'material_corrugation', 'material_inside')
     list_display = ('name', 'profile', 'color_count', 'stamp', 'width', 'length', 'area', 'set_area',
                     'scheme_file', 'scheme_file_2', 'view_design_file', 'view_equipment_file',
                     'material_outer', 'material_corrugation', 'material_inside')
-    readonly_fields = ['area', 'area_one_product', 'scheme_file', 'scheme_file_2', 'view_design_file', 'view_equipment_file']
+    readonly_fields = ['area', 'scheme_file', 'scheme_file_2', 'view_design_file', 'view_equipment_file']
     # Фильтрация в списке
     # list_filter = ('name', 'format',)
     # Поиск по полям
