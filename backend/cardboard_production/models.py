@@ -75,10 +75,10 @@ class Order(UUIDMixin, TimeStampedMixin):
                                          (True, '+')])
     width = models.IntegerField(verbose_name='Ширина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
     length = models.IntegerField(verbose_name='Длина, мм', default=100,  validators=[MinValueValidator(0), MaxValueValidator(3000)])
-    area = models.FloatField(verbose_name="Площадь м²", default=0)
+    area = models.FloatField(verbose_name="Площадь, м²", default=0)
     quantity_products_per_stamp = models.IntegerField(verbose_name='Кол-во изделий на штампе', default=1,
                                  validators=[MinValueValidator(1), MaxValueValidator(10)])
-    set_area = models.DecimalField(verbose_name="Площадь комплекта м²", max_digits=5, decimal_places=2, default=0)
+    set_area = models.DecimalField(verbose_name="Площадь комплекта, м²", max_digits=5, decimal_places=2, default=0)
     file = models.FileField(upload_to="Scheme/%Y/%m/%d/", default=None,
                               blank=True, null=True, verbose_name="", validators=[custom_file_validator])
     file2 = models.FileField(upload_to="Scheme2/%Y/%m/%d/", default=None,
