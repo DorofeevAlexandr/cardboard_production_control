@@ -42,7 +42,7 @@ class OrderAdmin(admin.ModelAdmin):
     # list_filter = ('name', 'format',)
     # Поиск по полям
     search_fields = ('name', )
-    # save_on_top = True
+    save_on_top = True
 
     @admin.display(description="Чертёж 1", ordering='name')
     def scheme_file(self, order: Order):
