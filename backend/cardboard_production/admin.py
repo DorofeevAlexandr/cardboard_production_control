@@ -1,7 +1,7 @@
 import datetime as dt
 from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
-from .models import Productions, Order, Material, Format, Profile, CuttingCardboard, Statement
+from .models import Productions, Order, Material, Format, Profile, CuttingCardboard, Statement, ElectroCounters
 
 admin.site.site_header = "Панель администрирования"
 admin.site.index_title = "Сменные задания"
@@ -251,3 +251,16 @@ class StatementAdmin(admin.ModelAdmin):
             return "-"
         except:
             return "-"
+
+
+@admin.register(ElectroCounters)
+class ElectroCountersAdmin(admin.ModelAdmin):
+    # Отображение полей в списке
+    fields = ('number', 'client_name', 'address', 'transformation_coefficient')
+    list_display = ('number', 'client_name', 'address', 'transformation_coefficient')
+    readonly_fields = []
+    # Фильтрация в списке
+    # list_filter = ('name', 'format',)
+    # Поиск по полям
+    search_fields = ('client_name', )
+    save_on_top = True
