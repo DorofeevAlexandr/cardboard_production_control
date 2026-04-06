@@ -171,3 +171,21 @@ class Statement(UUIDMixin, TimeStampedMixin):
         db_table = 'statement'
         verbose_name = 'Ведомость'
         verbose_name_plural = 'Ведомости'
+
+
+class ElectroCounters(UUIDMixin, TimeStampedMixin):
+    number = models.IntegerField(verbose_name='Номер счетчика', default=100, unique=True,
+                                 validators=[MinValueValidator(0), MaxValueValidator(255)])
+    client_name = models.CharField(verbose_name='Наименование клиента', max_length=40, unique=True)
+    address = models.IntegerField(verbose_name='Сетевой адрес', default=100, unique=True,
+                                  validators=[MinValueValidator(0), MaxValueValidator(255)])
+    transformation_coefficient = models.IntegerField(verbose_name='Коэф. трансформации', default=1,
+                                                     validators=[MinValueValidator(0)])
+
+    def __str__(self):
+        return f'{self.number} - {self.client_name}'
+
+    class Meta:
+        db_table = 'electro_counters'
+        verbose_name = 'Электросчетчик'
+        verbose_name_plural = 'Электросчетчики'
