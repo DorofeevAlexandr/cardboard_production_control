@@ -181,6 +181,7 @@ class ElectroCounters(UUIDMixin, TimeStampedMixin):
                                   validators=[MinValueValidator(0), MaxValueValidator(255)])
     transformation_coefficient = models.IntegerField(verbose_name='Коэф. трансформации', default=1,
                                                      validators=[MinValueValidator(0)])
+    energy = models.BigIntegerField(verbose_name='Номер счетчика', default=0, validators=[MinValueValidator(0)])
 
     def __str__(self):
         return f'{self.number} - {self.client_name}'
