@@ -19,6 +19,9 @@ services:
     container_name: influxdb
     ports:
       - "8086:8086"
+    networks:
+      - bridge_network
+    restart: always
     volumes:
       - influxdb-data:/var/lib/influxdb
     environment:
