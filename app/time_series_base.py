@@ -21,10 +21,12 @@ def write_electro_counters_values(client, counters_params:list):
     for counter in counters_params:
         number = counter['number']
         client_name = counter['client_name']
+        energy_indic = counter['energy_indic']
         energy_k = counter['energy']
         point = (
             Point(f"Counter_{number}")
             .tag("client_name", client_name)
+            .field("energy_indic", energy_indic)
             .field("energy", energy_k)
             )
 
@@ -38,7 +40,7 @@ def read_electro_counters_values(client):
 
     query = """from(bucket: "ElectroCounters")
      |> range(start: -100m)
-     |> filter(fn: (r) => r._measurement == "Counter_1")"""
+     |> filter(fn: (r) => r._measurement == "Counter_2")"""
     tables = query_api.query(query, org=org)
 
     for table in tables:

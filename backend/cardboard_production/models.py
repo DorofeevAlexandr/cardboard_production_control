@@ -177,10 +177,11 @@ class ElectroCounters(UUIDMixin, TimeStampedMixin):
     number = models.IntegerField(verbose_name='Номер счетчика', default=100, unique=True,
                                  validators=[MinValueValidator(0), MaxValueValidator(255)])
     client_name = models.CharField(verbose_name='Наименование клиента', max_length=40, unique=True)
-    address = models.IntegerField(verbose_name='Сетевой адрес', default=100, unique=True,
+    address = models.IntegerField(verbose_name='Сетевой адрес регистра', default=100, unique=True,
                                   validators=[MinValueValidator(0), MaxValueValidator(255)])
     transformation_coefficient = models.IntegerField(verbose_name='Коэф. трансформации', default=1,
                                                      validators=[MinValueValidator(0)])
+    energy_indic = models.BigIntegerField(verbose_name='Значение эн. на счетчике', default=0, validators=[MinValueValidator(0)])
     energy = models.BigIntegerField(verbose_name='Значение энергии', default=0, validators=[MinValueValidator(0)])
 
     def __str__(self):

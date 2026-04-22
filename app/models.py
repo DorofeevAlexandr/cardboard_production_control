@@ -13,6 +13,7 @@ class ElectroCounters(Base):
     client_name = Column(Text, unique=True)
     address = Column(Integer, unique=True)
     transformation_coefficient = Column(Integer)
+    energy_indic = Column(BigInteger)
     energy = Column(BigInteger)
 
     def __repr__(self):

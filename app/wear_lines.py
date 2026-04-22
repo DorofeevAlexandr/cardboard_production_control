@@ -20,13 +20,14 @@ def get_counter_indicator_value(registers, address):
 def read_electro_counters_update_in_base(session, counters_params, registers):
     for counter in counters_params:
         if COUNTER_SIMULATION:
-            energy = datetime.now().second
+            energy_indic = datetime.now().second
         else:
-            energy = get_counter_indicator_value(registers, counter['number'])
-        energy_k = energy * counter['transformation_coefficient']
+            energy_indic = get_counter_indicator_value(registers, counter['number'])
+        energy_k = energy_indic * counter['transformation_coefficient']
         counter['energy'] = energy_k
         update_counter_in_base(session,
                               counter_params=counter,
+                              energy_indic=energy_indic,
                               energy=energy_k)
 
 
@@ -40,16 +41,18 @@ def read_electro_counters_params_in_base(session):
             'client_name' : counter.client_name,
             'address' : counter.address,
             'transformation_coefficient' : counter.transformation_coefficient,
+            'energy_indic': counter.energy_indic,
             'energy' : counter.energy,
             })
     return sorted(params, key=lambda x: x['number'])
 
 
 
-def update_counter_in_base(session, counter_params, energy=0):
+def update_counter_in_base(session, counter_params, energy_indic=0, energy=0):
     number = counter_params['number']
     counter = session.query(ElectroCounters).filter(ElectroCounters.number==number).first()
     if counter:
+        counter.energy_indic = energy_indic
         counter.energy = energy
         counter.updated_dt = datetime.now()
     else:
