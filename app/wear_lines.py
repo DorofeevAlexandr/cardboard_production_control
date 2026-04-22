@@ -43,7 +43,7 @@ def read_electro_counters_params_in_base(session):
             'transformation_coefficient' : counter.transformation_coefficient,
             'energy' : counter.energy,
             })
-    return params
+    return sorted(params, key=lambda x: x['number'])
 
 
 
