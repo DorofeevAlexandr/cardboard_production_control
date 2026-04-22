@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 import time
 
-from wear_lines import (read_electro_counters_params_in_base, read_electro_counters)
+from wear_lines import (read_electro_counters_params_in_base, read_electro_counters_update_in_base)
 
 
 def postgres_engine():
@@ -26,13 +26,11 @@ def postgres_engine():
 
 def read_counters_save_current_params(p_engine):
     with Session(autoflush=False, bind=p_engine) as db:
-
         registers = [n for n in range(10)]
         print(registers)
         counters_params = read_electro_counters_params_in_base(session=db)
         print(counters_params)
-        read_electro_counters(db, counters_params, registers)
-
+        read_electro_counters_update_in_base(db, counters_params, registers)
         try:
             pass
         except Exception as e:

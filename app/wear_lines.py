@@ -17,7 +17,7 @@ def get_counter_indicator_value(registers, address):
         return 0
 
 
-def read_electro_counters(session, counters_params, registers):
+def read_electro_counters_update_in_base(session, counters_params, registers):
     for counter in counters_params:
         if COUNTER_SIMULATION:
             energy = datetime.now().second
@@ -28,7 +28,7 @@ def read_electro_counters(session, counters_params, registers):
         energy_k = energy * counter['transformation_coefficient']
         update_counter_in_base(session,
                               counter_params=counter,
-                              energy=energy)
+                              energy=energy_k)
 
 
 def read_electro_counters_params_in_base(session):
