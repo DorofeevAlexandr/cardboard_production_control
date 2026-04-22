@@ -8,7 +8,7 @@ def client_influxdb():
     load_dotenv()
     token = os.environ.get("INFLUXDB_TOKEN")
     org = "12"
-    url = "http://localhost:8086"
+    url = "http://influxdb:8086"
     print(token)
     return influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
@@ -45,4 +45,5 @@ def read_electro_counters_values(client):
 
     for table in tables:
       for record in table.records:
-        print(record)
+        pass
+        # print(record)

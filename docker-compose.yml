@@ -32,6 +32,19 @@ services:
       - INFLUXDB_USER_PASSWORD=${INFLUXDB_USER_PASSWORD}
 
 
+  counter_app :
+    networks:
+      - bridge_network
+    build: ./counter_app/
+    restart: always
+    env_file:
+      - ./.env
+    container_name: counter_app
+    depends_on:
+      - db
+      - influxdb
+
+
   web:
     build:
       context: ./backend

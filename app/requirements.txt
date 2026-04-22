@@ -1,2 +1,0 @@
-pyModbusTCP==0.1.10
-SQLAlchemy==2.0.36

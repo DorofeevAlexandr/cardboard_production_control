@@ -16,7 +16,7 @@ def postgres_engine():
     db_user = os.environ.get('DB_USER')
     db_pass = os.environ.get('DB_PASSWORD')
     db_host = os.environ.get('DB_HOST', 'db')
-    db_host = 'localhost'
+    # db_host = 'localhost'
     db_port = str(os.environ.get('DB_PORT', 5432))
 
     # Connecto to the database
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     dt_last_save_current_params = dt.datetime.now()
     dt_last_save_lengths = dt.datetime.now()
     while True:
-        time.sleep(60)
+        time.sleep(61)
         if dt.datetime.now() - dt_last_save_current_params >= dt.timedelta(seconds=1):
             counters_params = read_counters_save_current_params(p_engine=engine)
             if counters_params:

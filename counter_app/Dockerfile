@@ -6,4 +6,4 @@ RUN echo "Europe/Moscow" > /etc/timezone
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 COPY . .
-CMD ["python", "-u", "app.py"]
+CMD ["python", "-u", "counter_app.py"]
