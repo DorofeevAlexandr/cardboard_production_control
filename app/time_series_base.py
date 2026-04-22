@@ -3,36 +3,44 @@ from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 from dotenv import load_dotenv
 
-load_dotenv()
-token = os.environ.get("INFLUXDB_TOKEN")
-org = "12"
-url = "http://localhost:8086"
-print(token)
-client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
-bucket = "ElectroCounters"
+def client_influxdb():
+    load_dotenv()
+    token = os.environ.get("INFLUXDB_TOKEN")
+    org = "12"
+    url = "http://localhost:8086"
+    print(token)
+    return influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
-write_api = client.write_api(write_options=SYNCHRONOUS)
 
-for value in range(5):
-    point = (
-        Point("measurement1")
-        .tag("client_name", "ABK")
-        .field("energy", value)
-    )
-    write_api.write(bucket=bucket, org="12", record=point)
-    time.sleep(1)  # separate points by 1 second
-    print(value)
-    print(point)
+def write_electro_counters_values(client, counters_params:list):
+    bucket = "ElectroCounters"
+    org = "12"
+    write_api = client.write_api(write_options=SYNCHRONOUS)
 
-print('==================================================================')
-query_api = client.query_api()
+    for counter in counters_params:
+        number = counter['number']
+        client_name = counter['client_name']
+        energy_k = counter['energy']
+        point = (
+            Point(f"Counter_{number}")
+            .tag("client_name", client_name)
+            .field("energy", energy_k)
+            )
 
-query = """from(bucket: "ElectroCounters")
- |> range(start: -100m)
- |> filter(fn: (r) => r._measurement == "measurement1")"""
-tables = query_api.query(query, org="12")
+        write_api.write(bucket=bucket, org=org, record=point)
+        print(point)
 
-for table in tables:
-  for record in table.records:
-    print(record)
+
+def read_electro_counters_values(client):
+    org = "12"
+    query_api = client.query_api()
+
+    query = """from(bucket: "ElectroCounters")
+     |> range(start: -100m)
+     |> filter(fn: (r) => r._measurement == "Counter_1")"""
+    tables = query_api.query(query, org=org)
+
+    for table in tables:
+      for record in table.records:
+        print(record)

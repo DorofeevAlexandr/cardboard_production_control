@@ -23,9 +23,8 @@ def read_electro_counters_update_in_base(session, counters_params, registers):
             energy = datetime.now().second
         else:
             energy = get_counter_indicator_value(registers, counter['number'])
-
-
         energy_k = energy * counter['transformation_coefficient']
+        counter['energy'] = energy_k
         update_counter_in_base(session,
                               counter_params=counter,
                               energy=energy_k)
