@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<ul class="list-articles">
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p><button type="submit">Обновить</button></p>
+    </form>
+
+<div class="tabs">
+
+                        <!-- bar chart canvas element -->
+            <canvas id="myChart" height="100%"></canvas>
+            <script>
+            var ctx = document.getElementById('myChart');
+
+            var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+labels : [{% for item in times %} "{{item}}", {% endfor %}],
+              datasets: [{
+                label: '{{l.pseudonym}}',
+
+data : [{% for item in l.speed %} {{item}}, {% endfor %}],
+                borderColor: "rgba(0,160,0,1)",
+                pointRadius: 1,
+                pointHitRadius: 10,
+<!--                stepped: 'middle',-->
+                }
+
+
+              ],
+            },
+
+            options: {
+                    plugins: {
+                        legend: { display: false,}
+                    },
+                    animation : false,
+                    animation: { duration: 0, },
+                    hover: { animationDuration: 0, },
+                    responsiveAnimationDuration: 0,
+                    elements: { line: {tension: 0.1, }},
+                    scales: {
+
+                            x: {
+                                ticks: {
+                                    font: {size: 10},
+                                    maxRotation: 0,
+                                    minRotation: 0,
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    font: {size: 10},
+                                },
+                            },
+                        },
+            }
+
+            });
+
+            </script>
+
+    <p></p>
+    <table width="100%" border="1">
+        <tr>
+        <tr>
+            <th> № </th><th>Потребитель</th><th>Начало</th><th>Конец</th><th>Потребление</th>
+        </tr>
+
+        {% for c in counters %}
+            <tr>
+                <th>{{c.number}}</th><td>{{c.client_name}}</td><td>{{c.number}}</td><td>{{c.number}}</td><td>{{c.energy}}</td>
+            </tr>
+        {% endfor %}
+
+    </table>
+
+
+</div>
+
+</ul>
+
+{% endblock %}

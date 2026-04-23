@@ -47,6 +47,7 @@
     sudo docker ps -a
     
     sudo docker-compose logs -f
+    sudo docker logs --tail 100 cardboard_production_control-web-1
 
 ---
 Групповой запрос на обновление ПО
