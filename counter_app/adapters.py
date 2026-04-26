@@ -18,6 +18,25 @@ regs = {key: 0 for key in range(0, 100)}
 # init a thread lock
 regs_lock = Lock()
 
+
+def get_counter_indicator_value(registers, address):
+    import struct
+
+    try:
+        if registers:
+            w0 = registers[address + 0]
+            w1 = registers[address + 1]
+            buffer = struct.pack('HH', w0, w1)
+            # print(buffer)
+            # parameter.value = '%.3f' % struct.unpack('f', buffer)[0]
+            value = struct.unpack('f', buffer)[0]
+            print(address, w0, w1, value)
+            return value
+        return 0
+    except:
+        return 0
+
+
 # modbus polling thread
 def polling_thread():
     global regs
@@ -63,6 +82,19 @@ def get_registers():
 
 if __name__ == '__main__':
     while True:
-        get_registers()
+
+        reg = get_registers()
         print(get_registers())
-        time.sleep(1)
+        print(get_counter_indicator_value(reg, 10))
+        print(get_counter_indicator_value(reg, 11))
+        print(get_counter_indicator_value(reg, 12))
+        print(get_counter_indicator_value(reg, 13))
+        print(get_counter_indicator_value(reg, 14))
+        print(get_counter_indicator_value(reg, 15))
+        print(get_counter_indicator_value(reg, 16))
+        print(get_counter_indicator_value(reg, 17))
+        print(get_counter_indicator_value(reg, 18))
+        print(get_counter_indicator_value(reg, 19))
+        print(get_counter_indicator_value(reg, 20))
+        # time.sleep(10)
+        exit()
