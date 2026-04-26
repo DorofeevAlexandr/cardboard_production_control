@@ -7,7 +7,7 @@ import time
 
 import adapters
 from time_series_base import client_influxdb, write_electro_counters_values, read_electro_counters_values
-from wear_lines import (read_electro_counters_params_in_base, read_electro_counters_update_in_base)
+from electro_counters import (read_electro_counters_params_in_base, read_electro_counters_update_in_base)
 
 
 def postgres_engine():
