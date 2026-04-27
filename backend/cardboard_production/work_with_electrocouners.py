@@ -114,6 +114,7 @@ def read_electro_counters_values(client, date: dt.date, step_months=0):
     # | > range({time_start}: {time_end})
     query = f"""from(bucket: "ElectroCounters")    
      |> range(start: {st_time_start}, stop: {st_time_end})
+     |> window(every: 10m)
      |> group(columns: ["_time"])
      |> filter(fn: (r) => r._field == "energy")"""
     print(query)
