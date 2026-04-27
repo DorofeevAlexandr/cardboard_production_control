@@ -45,7 +45,7 @@ if __name__ == '__main__':
     dt_last_save_current_params = dt.datetime.now()
     dt_last_save_lengths = dt.datetime.now()
     while True:
-        time.sleep(61)
+        time.sleep(600)
         if dt.datetime.now() - dt_last_save_current_params >= dt.timedelta(seconds=1):
             counters_params = read_counters_save_current_params(p_engine=engine)
             if counters_params:
