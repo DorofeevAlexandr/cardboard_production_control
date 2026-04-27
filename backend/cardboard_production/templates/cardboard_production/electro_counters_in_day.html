@@ -17,48 +17,42 @@
             var ctx = document.getElementById('myChart');
 
             var myChart = new Chart(ctx, {
-            type: 'line',
+            type: 'bar',
             data: {
 labels : [{% for item in times %} "{{item}}", {% endfor %}],
-              datasets: [{
-                label: '{{l.pseudonym}}',
 
-data : [{% for item in l.speed %} {{item}}, {% endfor %}],
-                borderColor: "rgba(0,160,0,1)",
-                pointRadius: 1,
-                pointHitRadius: 10,
-<!--                stepped: 'middle',-->
-                }
-
-
+datasets: [
+{% for counter, values in count_values.items %}
+                {
+                label: '{{counter}}',
+                data : [
+                {% for value in values.count_val %}
+                    {{value}},
+                {% endfor %}
               ],
+
+              backgroundColor: '{{ values.color }}',
+
             },
-
-            options: {
-                    plugins: {
-                        legend: { display: false,}
-                    },
-                    animation : false,
-                    animation: { duration: 0, },
-                    hover: { animationDuration: 0, },
-                    responsiveAnimationDuration: 0,
-                    elements: { line: {tension: 0.1, }},
-                    scales: {
-
-                            x: {
-                                ticks: {
-                                    font: {size: 10},
-                                    maxRotation: 0,
-                                    minRotation: 0,
-                                }
-                            },
-                            y: {
-                                ticks: {
-                                    font: {size: 10},
-                                },
-                            },
-                        },
-            }
+{% endfor %}
+]},
+           options: {
+                plugins: {
+                  title: {
+                    display: true,
+                    text: 'Chart.js Bar Chart - Stacked'
+                  },
+                },
+                responsive: true,
+                scales: {
+                  x: {
+                    stacked: true,
+                  },
+                  y: {
+                    stacked: true
+                  }
+                }
+              }
 
             });
 

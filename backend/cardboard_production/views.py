@@ -4,7 +4,7 @@ from django.http import (HttpResponse, HttpResponseNotFound, Http404, HttpRespon
 import mimetypes
 
 from .forms import ReadDataCounters, ReadAndSaveLinesStatistic
-from .work_with_electrocouners import get_counters_from_base
+from .work_with_electrocouners import get_counters_from_base, client_influxdb, read_electro_counters_values
 
 
 menu = [{'title': "Данные за день", 'url_name': 'electro_counters_statistics_for_the_day'},
@@ -34,8 +34,7 @@ def open_pdf_file_view(request, filename):
 
 
 def electro_counters_statistics_for_the_day(request):
-    smale_speed_lines = []
-    lines_statistic = []
+    count_values = []
     time = []
     counters = get_counters_from_base()
     if request.method == 'POST':
@@ -44,13 +43,17 @@ def electro_counters_statistics_for_the_day(request):
             select_date = form.cleaned_data.get('day', None)
             if select_date:
                 pass
-                # time, smale_speed_lines, lines_statistic = get_data_in_select_date(select_date)
+                client = client_influxdb()
+                time, count_values = read_electro_counters_values(client=client,
+                                             date=select_date)
+                client.close()
     else:
         form = ReadDataCounters()
 
     data = {
         'title': 'Электросчетчики - Данные за день',
         'counters': counters,
+        'count_values': count_values,
         'form': form,
         'times': time,
         'menu': menu,
