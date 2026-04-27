@@ -63,6 +63,31 @@ def generate_random_hex_color():
     # Форматируем в виде #RRGGBB
     return f"#{r:02X}{g:02X}{b:02X}"
 
+
+def power_consumption(values):
+    for cn in values:
+        prev_val = 0
+        # print(cn)
+        for ind, val in enumerate(values[cn]['count_val']):
+            if val != 0 and prev_val != 0:
+                power_consumption = val - prev_val
+            else:
+                power_consumption = 0
+            prev_val = val
+            values[cn]['count_val'][ind] = max(power_consumption, 0)
+
+
+def get_times(time_start: dt.datetime, time_end:dt.datetime, step_minutes=60):
+    times = []
+    step_time = dt.timedelta(minutes=step_minutes)
+    cur_time = time_start
+    while cur_time < time_end:
+        times.append(cur_time)
+        cur_time = cur_time + step_time
+    times.append(time_end)
+    return times
+
+
 def read_electro_counters_values(client, date: dt.date, step_months=0):
     org = "12"
     query_api = client.query_api()
@@ -76,14 +101,19 @@ def read_electro_counters_values(client, date: dt.date, step_months=0):
                              minute=0,
                              second=0)
     time_end = time_start + dtime_1_days
-    time_start = '2026-04-27T05:28:03Z'
+
+    t1 = get_times(time_start, time_end, step_minutes=60)
+    print(t1)
+    st_time_start = f'{time_start.isoformat()}Z'
+    st_time_end = f'{time_end.isoformat()}Z'
+
     '''
-     |> window(every: 3m)
+     |> window(every: 5m)
      |> mean()
     '''
     # | > range({time_start}: {time_end})
     query = f"""from(bucket: "ElectroCounters")    
-     |> range(start: {time_start}, stop: 2026-04-27T10:05:03Z)
+     |> range(start: {st_time_start}, stop: {st_time_end})
      |> group(columns: ["_time"])
      |> filter(fn: (r) => r._field == "energy")"""
     print(query)
@@ -97,7 +127,7 @@ def read_electro_counters_values(client, date: dt.date, step_months=0):
         # print('--------------')
         # print(record)
         # print(record['_time'], record['_field'], record['_value'])
-        measurement_time = dt.time(hour=record['_time'].hour + 3,
+        measurement_time = dt.time(hour=record['_time'].hour,
                        minute=record['_time'].minute)
         if measurement_time not in times.keys():
             times[measurement_time] = {}
@@ -111,16 +141,8 @@ def read_electro_counters_values(client, date: dt.date, step_months=0):
 
         values[client_name]['count_val'].append(record['_value'])
 
-    for cn in values:
-        prev_val = 0
-        print(cn)
-        for ind, val in enumerate(values[cn]['count_val']):
-            if val != 0 and prev_val != 0:
-                power_consumption = val - prev_val
-            else:
-                power_consumption = 0
-            prev_val = val
-            values[cn]['count_val'][ind] = power_consumption
+    power_consumption(values)
+
     # print(times)
     # print(values)
     return times, values
