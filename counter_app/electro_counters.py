@@ -3,7 +3,7 @@ from datetime import datetime
 from models import ElectroCounters
 
 
-COUNTER_SIMULATION = True
+COUNTER_SIMULATION = False
 
 
 def get_counter_indicator_value(registers, address):

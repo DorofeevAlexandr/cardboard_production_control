@@ -28,17 +28,14 @@ def postgres_engine():
 
 def read_counters_save_current_params(p_engine):
     with Session(autoflush=False, bind=p_engine) as db:
-        # registers = [n for n in range(10)]
-        registers = adapters.get_registers()
-        print(registers)
-        counters_params = read_electro_counters_params_in_base(session=db)
-        print(counters_params)
-        read_electro_counters_update_in_base(db, counters_params, registers)
-
         try:
-            pass
+            registers = adapters.get_registers()
+            counters_params = read_electro_counters_params_in_base(session=db)
+            read_electro_counters_update_in_base(db, counters_params, registers)
         except Exception as e:
             print('error', e)
+            print(registers)
+            print(counters_params)
         return  counters_params
 
 
@@ -54,5 +51,4 @@ if __name__ == '__main__':
             if counters_params:
                 write_electro_counters_values(client=client,
                                               counters_params=counters_params)
-            read_electro_counters_values(client=client)
             dt_last_save_current_params = dt.datetime.now()
