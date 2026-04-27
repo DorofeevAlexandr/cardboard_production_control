@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<ul class="list-articles">
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p><button type="submit">Обновить</button></p>
+    </form>
+
+<div class="tabs">
+
+                        <!-- bar chart canvas element -->
+            <canvas id="myChart" height="100%"></canvas>
+            <script>
+            var ctx = document.getElementById('myChart');
+
+            var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+labels : [{% for item in times %} "{{item}}", {% endfor %}],
+
+datasets: [
+{% for counter, values in count_values.items %}
+                {
+                label: '{{counter}}',
+                data : [
+                {% for value in values.count_val %}
+                    {{value}},
+                {% endfor %}
+              ],
+
+              backgroundColor: '{{ values.color }}',
+
+            },
+{% endfor %}
+]},
+           options: {
+                plugins: {
+                  title: {
+                    display: true,
+                    text: 'Chart.js Bar Chart - Stacked'
+                  },
+                },
+                responsive: true,
+                scales: {
+                  x: {
+                    stacked: true,
+                  },
+                  y: {
+                    stacked: true
+                  }
+                }
+              }
+
+            });
+
+            </script>
+
+    <p></p>
+    <table width="100%" border="1">
+        <tr>
+        <tr>
+            <th> № </th><th>Потребитель</th><th>Начало</th><th>Конец</th><th>Потребление</th>
+        </tr>
+
+        {% for c in counters %}
+            <tr>
+                <th>{{c.number}}</th><td>{{c.client_name}}</td><td>{{c.number}}</td><td>{{c.number}}</td><td>{{c.energy}}</td>
+            </tr>
+        {% endfor %}
+
+    </table>
+
+
+</div>
+
+</ul>
+
+{% endblock %}
