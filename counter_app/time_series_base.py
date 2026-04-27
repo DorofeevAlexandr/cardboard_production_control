@@ -31,7 +31,7 @@ def write_electro_counters_values(client, counters_params:list):
             )
 
         write_api.write(bucket=bucket, org=org, record=point)
-        print(point)
+        # print(point)
 
 
 def read_electro_counters_values(client):
