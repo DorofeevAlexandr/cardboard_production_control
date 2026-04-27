@@ -27,8 +27,8 @@ def client_influxdb():
     load_dotenv()
     token = os.environ.get("INFLUXDB_TOKEN")
     org = "12"
-    # url = "http://influxdb:8086"
-    url = "http://127.0.0.1:8086"
+    url = "http://influxdb:8086"
+    # url = "http://127.0.0.1:8086"
     print(token)
     return influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
