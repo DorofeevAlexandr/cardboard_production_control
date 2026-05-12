@@ -11,7 +11,7 @@ def get_counter_indicator_value(registers, address):
         if registers:
             w0 = registers[address + 0]
             w1 = registers[address + 1]
-            return w0 * 65536 + w1
+            return w1 * 65536 + w0
         return 0
     except:
         return 0
