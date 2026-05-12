@@ -33,28 +33,6 @@ def client_influxdb():
     return influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
 
-def write_electro_counters_values(client, counters_params:list):
-    bucket = "ElectroCounters"
-    org = "12"
-    write_api = client.write_api(write_options=SYNCHRONOUS)
-
-    for counter in counters_params:
-        number = counter['number']
-        client_name = counter['client_name']
-        energy_indic = counter['energy_indic']
-        energy_k = counter['energy']
-        point = (
-            Point(f"Counter_{number}")
-            .tag("client_name", client_name)
-            .field("energy_indic", energy_indic)
-            .field("energy", energy_k)
-            )
-
-        write_api.write(bucket=bucket, org=org, record=point)
-        #print(point)
-
-
-
 def generate_random_hex_color():
     # Генерируем три случайных целых числа в диапазоне 0–255 для RGB
     r = random.randint(0, 255)
@@ -69,13 +47,16 @@ def power_consumption(values):
         prev_val = 0
         # print(cn)
         for ind, val in enumerate(values[cn]['count_val']):
+            # print(ind, val)
             if val != 0 and prev_val != 0:
-                power_consumption = val - prev_val
+                # val = float(val)
                 power_consumption = int(val - prev_val)
             else:
                 power_consumption = 0
             prev_val = val
             values[cn]['count_val'][ind] = max(power_consumption, 0)
+            # print(power_consumption)
+            # print(values[cn]['count_val'])
 
 
 def get_times(time_start: dt.datetime, time_end:dt.datetime, step_minutes=60):
@@ -102,20 +83,16 @@ def read_electro_counters_values(client, date: dt.date, step_months=0):
                              minute=0,
                              second=0)
     time_end = time_start + dtime_1_days
+    # time_start = time_start - dt.timedelta(hours=1)
 
-    t1 = get_times(time_start, time_end, step_minutes=60)
-    print(t1)
+    # t1 = get_times(time_start, time_end, step_minutes=60)
+    # print(t1)
     st_time_start = f'{time_start.isoformat()}Z'
     st_time_end = f'{time_end.isoformat()}Z'
 
-    '''
-     |> window(every: 5m)
-     |> mean()
-    '''
-    # | > range({time_start}: {time_end})
     query = f"""from(bucket: "ElectroCounters")    
      |> range(start: {st_time_start}, stop: {st_time_end})
-     |> window(every: 10m)
+     |> aggregateWindow(every: 1h, fn: median, createEmpty: false)
      |> group(columns: ["_time"])
      |> filter(fn: (r) => r._field == "energy")"""
     print(query)
