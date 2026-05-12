@@ -17,8 +17,8 @@ def get_counters_from_base():
                           'client_name': c.client_name,
                           'address': c.address,
                           'transformation_coefficient': c.transformation_coefficient,
-                          'energy_indic': c.energy_indic,
-                          'energy': c.energy,
+                          'energy_indic': str(c.energy_indic / 1000),
+                          'energy': str(c.energy / 1000),
                           })
     return res_counters
 
@@ -71,6 +71,7 @@ def power_consumption(values):
         for ind, val in enumerate(values[cn]['count_val']):
             if val != 0 and prev_val != 0:
                 power_consumption = val - prev_val
+                power_consumption = int(val - prev_val)
             else:
                 power_consumption = 0
             prev_val = val

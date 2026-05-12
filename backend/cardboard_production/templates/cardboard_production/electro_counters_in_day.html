@@ -24,10 +24,10 @@ labels : [{% for item in times %} "{{item}}", {% endfor %}],
 datasets: [
 {% for counter, values in count_values.items %}
                 {
-                label: '{{counter}}',
+                label: '{{counter}}, кВт/ч',
                 data : [
                 {% for value in values.count_val %}
-                    {{value}},
+                    {{value }} / 1000,
                 {% endfor %}
               ],
 
@@ -39,8 +39,8 @@ datasets: [
            options: {
                 plugins: {
                   title: {
-                    display: true,
-                    text: 'Chart.js Bar Chart - Stacked'
+                    display: false,
+                    text: ''
                   },
                 },
                 responsive: true,
@@ -62,12 +62,12 @@ datasets: [
     <table width="100%" border="1">
         <tr>
         <tr>
-            <th> № </th><th>Потребитель</th><th>Начало</th><th>Конец</th><th>Потребление</th>
+            <th> № </th><th>Потребитель</th><th>Текущие даные кВт/ч</th>
         </tr>
 
         {% for c in counters %}
             <tr>
-                <th>{{c.number}}</th><td>{{c.client_name}}</td><td>{{c.number}}</td><td>{{c.number}}</td><td>{{c.energy}}</td>
+                <th>{{c.number}}</th><td>{{c.client_name}}</td><td>{{c.energy}}</td>
             </tr>
         {% endfor %}
 
