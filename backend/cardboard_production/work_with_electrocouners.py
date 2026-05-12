@@ -51,6 +51,7 @@ def power_consumption(values):
             if val != 0 and prev_val != 0:
                 # val = float(val)
                 power_consumption = int(val - prev_val)
+                power_consumption = 0 if power_consumption > 10_000_000 else power_consumption
             else:
                 power_consumption = 0
             prev_val = val
