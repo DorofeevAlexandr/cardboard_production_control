@@ -33,11 +33,33 @@ def client_influxdb():
     return influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
 
-def generate_random_hex_color():
-    # Генерируем три случайных целых числа в диапазоне 0–255 для RGB
-    r = random.randint(0, 255)
-    g = random.randint(0, 255)
-    b = random.randint(0, 255)
+def generate_random_hex_color(const_collor_number=-1):
+    if const_collor_number == 0:
+         r, g, b = 200, 17, 34
+    elif const_collor_number == 1:
+        r, g, b = 50, 0, 150
+    elif const_collor_number == 2:
+        r, g, b = 43, 129, 48
+    elif const_collor_number == 3:
+        r, g, b = 137, 73, 161
+    elif const_collor_number == 4:
+        r, g, b = 242, 228, 57
+    elif const_collor_number == 5:
+        r, g, b = 83, 17, 34
+    elif const_collor_number == 6:
+        r, g, b = 122, 202, 173
+    elif const_collor_number == 7:
+        r, g, b = 174, 155, 22
+    elif const_collor_number == 8:
+        r, g, b = 198, 126, 172
+    elif const_collor_number == 9:
+        r, g, b = 26, 30, 31
+    else:
+        # Генерируем три случайных целых числа в диапазоне 0–255 для RGB
+        r = random.randint(0, 255)
+        g = random.randint(0, 255)
+        b = random.randint(0, 255)
+    print(r, g, b)
     # Форматируем в виде #RRGGBB
     return f"#{r:02X}{g:02X}{b:02X}"
 
@@ -115,7 +137,7 @@ def read_electro_counters_values(client, date: dt.date, step_months=0):
         client_name = record['client_name']
         if client_name not in values.keys():
             values[client_name] = {'count_val' : [],
-                                   'color' : generate_random_hex_color(),
+                                   'color' : generate_random_hex_color(const_collor_number=len(values)),
             }
             # print(client_name)
 
