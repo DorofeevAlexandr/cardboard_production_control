@@ -1,9 +1,10 @@
+import datetime as  dt
 from django.shortcuts import render, redirect
 from django.http import (HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect,
                          HttpResponsePermanentRedirect, FileResponse)
 import mimetypes
 
-from .forms import ReadDataCounters, ReadAndSaveLinesStatistic
+from .forms import ReadDateForElectroCounters, ReadMonthForElectroCounters
 from .work_with_electrocouners import get_counters_from_base, client_influxdb, read_electro_counters_values
 
 
@@ -38,17 +39,16 @@ def electro_counters_statistics_for_the_day(request):
     time = []
     counters = get_counters_from_base()
     if request.method == 'POST':
-        form = ReadDataCounters(request.POST, request.FILES)
+        form = ReadDateForElectroCounters(request.POST, request.FILES)
         if form.is_valid():
             select_date = form.cleaned_data.get('day', None)
             if select_date:
-                pass
                 client = client_influxdb()
                 time, count_values = read_electro_counters_values(client=client,
                                              date=select_date)
                 client.close()
     else:
-        form = ReadDataCounters()
+        form = ReadDateForElectroCounters()
 
     data = {
         'title': 'Электросчетчики - Данные за день',
@@ -58,4 +58,35 @@ def electro_counters_statistics_for_the_day(request):
         'times': time,
         'menu': menu,
     }
-    return render(request, 'cardboard_production/electro_counters_in_day.html', context=data)
+    return render(request, 'cardboard_production/electro_counters.html', context=data)
+
+
+def electro_counters_statistics_for_the_month(request):
+    count_values = []
+    time = []
+    counters = get_counters_from_base()
+    if request.method == 'POST':
+        form = ReadMonthForElectroCounters(request.POST, request.FILES)
+        if form.is_valid():
+            calendar_date = form.cleaned_data.get('start_day', None)
+            start_date = dt.date(year=calendar_date.year,
+                                 month=calendar_date.month,
+                                 day=1)
+            if start_date:
+                client = client_influxdb()
+                time, count_values = read_electro_counters_values(client=client,
+                                                                  date=start_date,
+                                                                  data_reading_period='1 month')
+                client.close()
+    else:
+        form = ReadMonthForElectroCounters()
+
+    data = {
+        'title': 'Электросчетчики - Данные за месяц',
+        'counters': counters,
+        'count_values': count_values,
+        'form': form,
+        'times': time,
+        'menu': menu,
+    }
+    return render(request, 'cardboard_production/electro_counters.html', context=data)

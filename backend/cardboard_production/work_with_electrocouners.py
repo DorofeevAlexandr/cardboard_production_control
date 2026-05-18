@@ -59,7 +59,7 @@ def generate_random_hex_color(const_collor_number=-1):
         r = random.randint(0, 255)
         g = random.randint(0, 255)
         b = random.randint(0, 255)
-    print(r, g, b)
+    # print(r, g, b)
     # Форматируем в виде #RRGGBB
     return f"#{r:02X}{g:02X}{b:02X}"
 
@@ -93,19 +93,45 @@ def get_times(time_start: dt.datetime, time_end:dt.datetime, step_minutes=60):
     return times
 
 
-def read_electro_counters_values(client, date: dt.date, step_months=0):
-    org = "12"
-    query_api = client.query_api()
-    if step_months != 0:
-        end_date = date + relativedelta(months=step_months)
-    dtime_1_days = dt.timedelta(days=1)
+def get_time_period(date: dt.date, data_reading_period='1 day'):
     time_start = dt.datetime(year=date.year,
                              month=date.month,
                              day=date.day,
                              hour=0,
                              minute=0,
                              second=0)
-    time_end = time_start + dtime_1_days
+    if data_reading_period == '1 day':
+        time_end = time_start +  dt.timedelta(days=1)
+    elif data_reading_period == '1 month':
+        end_date = date + relativedelta(months=1)
+        time_end = dt.datetime(year=end_date.year,
+                                 month=end_date.month,
+                                 day=end_date.day,
+                                 hour=0,
+                                 minute=0,
+                                 second=0)
+    else:
+        time_end = time_start
+    return time_start, time_end
+
+
+def get_step_time(data_reading_period='1 day'):
+    if data_reading_period == '1 day':
+        return '1h'
+    elif data_reading_period == '1 month':
+        return '1d'
+    else:
+        return ''
+
+
+
+def read_electro_counters_values(client, date: dt.date, data_reading_period='1 day'):
+    org = "12"
+    query_api = client.query_api()
+
+    time_start, time_end = get_time_period(date, data_reading_period)
+    st_step_time = get_step_time(data_reading_period)
+
     # time_start = time_start - dt.timedelta(hours=1)
 
     # t1 = get_times(time_start, time_end, step_minutes=60)
@@ -115,7 +141,7 @@ def read_electro_counters_values(client, date: dt.date, step_months=0):
 
     query = f"""from(bucket: "ElectroCounters")    
      |> range(start: {st_time_start}, stop: {st_time_end})
-     |> aggregateWindow(every: 1h, fn: median, createEmpty: false)
+     |> aggregateWindow(every: {st_step_time}, fn: median, createEmpty: false)
      |> group(columns: ["_time"])
      |> filter(fn: (r) => r._field == "energy")"""
     print(query)
@@ -129,8 +155,11 @@ def read_electro_counters_values(client, date: dt.date, step_months=0):
         # print('--------------')
         # print(record)
         # print(record['_time'], record['_field'], record['_value'])
-        measurement_time = dt.time(hour=record['_time'].hour,
-                       minute=record['_time'].minute)
+        measurement_time = dt.datetime(year=record['_time'].year,
+                                       month=record['_time'].month,
+                                       day=record['_time'].day,
+                                       hour=record['_time'].hour,
+                                       minute=record['_time'].minute)
         if measurement_time not in times.keys():
             times[measurement_time] = {}
 

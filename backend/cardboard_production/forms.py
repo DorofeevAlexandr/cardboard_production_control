@@ -6,7 +6,7 @@ from django.utils.deconstruct import deconstructible
 from django.db import models
 
 
-class ReadDataCounters(forms.Form):
+class ReadDateForElectroCounters(forms.Form):
     day = forms.DateField(initial=dt.date.today,
                           label="Выберите дату",
                           required=True,
@@ -15,7 +15,7 @@ class ReadDataCounters(forms.Form):
                           )
 
 
-class ReadAndSaveLinesStatistic(forms.Form):
+class ReadMonthForElectroCounters(forms.Form):
     start_day = forms.DateField(initial=dt.date.today,
                           label="Выберите месяц",
                           required=True,
