@@ -25,11 +25,13 @@ def get_counters_from_base():
 
 def client_influxdb():
     load_dotenv()
-    token = os.environ.get("INFLUXDB_TOKEN")
+    # token = os.environ.get("INFLUXDB_TOKEN")
+    token = os.environ.get("TEST_SERVER_INFLUXDB_TOKEN")
     org = "12"
-    url = "http://influxdb:8086"
+    # url = "http://influxdb:8086"
     # url = "http://127.0.0.1:8086"
-    print(token)
+    url = os.environ.get("TEST_SERVER_INFLUXDB_URL")
+    # print(token)
     return influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
 
