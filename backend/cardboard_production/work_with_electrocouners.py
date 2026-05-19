@@ -68,20 +68,19 @@ def generate_random_hex_color(const_collor_number=-1):
 
 def power_consumption(values):
     for cn in values:
-        prev_val = 0
-        # print(cn)
+        len_values = len(values[cn]['count_val'])
         for ind, val in enumerate(values[cn]['count_val']):
-            # print(ind, val)
-            if val != 0 and prev_val != 0:
-                # val = float(val)
-                power_consumption = int(val - prev_val)
+            if ind + 1 < len_values:
+                next_val = values[cn]['count_val'][ind + 1]
+            else:
+                next_val = 0
+            if val != 0 and next_val != 0:
+                power_consumption = int(next_val - val)
                 power_consumption = 0 if power_consumption > 10_000_000 else power_consumption
             else:
                 power_consumption = 0
-            prev_val = val
             values[cn]['count_val'][ind] = max(power_consumption, 0)
-            # print(power_consumption)
-            # print(values[cn]['count_val'])
+
 
 
 def get_times(time_start: dt.datetime, time_end:dt.datetime, step_minutes=60):
