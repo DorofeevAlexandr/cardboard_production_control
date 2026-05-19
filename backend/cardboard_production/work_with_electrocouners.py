@@ -104,6 +104,7 @@ def get_time_period(date: dt.date, data_reading_period='1 day'):
                              second=0)
     if data_reading_period == '1 day':
         time_end = time_start +  dt.timedelta(days=1)
+        time_start = time_start - dt.timedelta(hours=1)
     elif data_reading_period == '1 month':
         end_date = date + relativedelta(months=1)
         time_end = dt.datetime(year=end_date.year,
@@ -112,6 +113,7 @@ def get_time_period(date: dt.date, data_reading_period='1 day'):
                                  hour=0,
                                  minute=0,
                                  second=0)
+        time_start = time_start - dt.timedelta(days=1)
     else:
         time_end = time_start
     return time_start, time_end
@@ -138,12 +140,12 @@ def read_electro_counters_values(client, date: dt.date, data_reading_period='1 d
 
     # t1 = get_times(time_start, time_end, step_minutes=60)
     # print(t1)
-    st_time_start = f'{time_start.isoformat()}Z'
-    st_time_end = f'{time_end.isoformat()}Z'
+    st_time_start = f'{time_start.isoformat()}+03:00'
+    st_time_end = f'{time_end.isoformat()}+03:00'
 
     query = f"""from(bucket: "ElectroCounters")    
      |> range(start: {st_time_start}, stop: {st_time_end})
-     |> aggregateWindow(every: {st_step_time}, fn: median, createEmpty: false)
+     |> aggregateWindow(every: {st_step_time}, fn: max, createEmpty: false)
      |> group(columns: ["_time"])
      |> filter(fn: (r) => r._field == "energy")"""
     print(query)
@@ -157,11 +159,13 @@ def read_electro_counters_values(client, date: dt.date, data_reading_period='1 d
         # print('--------------')
         # print(record)
         # print(record['_time'], record['_field'], record['_value'])
-        measurement_time = dt.datetime(year=record['_time'].year,
+        measurement_time = (dt.datetime(year=record['_time'].year,
                                        month=record['_time'].month,
                                        day=record['_time'].day,
                                        hour=record['_time'].hour,
-                                       minute=record['_time'].minute)
+                                       minute=record['_time'].minute) +
+                            dt.timedelta(hours=3))
+
         if measurement_time not in times.keys():
             times[measurement_time] = {}
 
