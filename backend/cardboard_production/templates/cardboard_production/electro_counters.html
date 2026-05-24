@@ -58,22 +58,6 @@ datasets: [
 
             </script>
 
-    <p></p>
-    <table width="100%" border="1">
-        <tr>
-        <tr>
-            <th> № </th><th>Потребитель</th><th>Текущие даные кВт/ч</th>
-        </tr>
-
-        {% for c in counters %}
-            <tr>
-                <th>{{c.number}}</th><td>{{c.client_name}}</td><td>{{c.energy}}</td>
-            </tr>
-        {% endfor %}
-
-    </table>
-
-
 </div>
 
 </ul>

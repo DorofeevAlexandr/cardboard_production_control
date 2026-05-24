@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='home'),
+    path('electricity', views.electro_counters_value,
+         name='electro_counters'),
     path('electricity_meter', views.electro_counters_statistics_for_the_day,
          name='electro_counters_statistics_for_the_day'),
     path('electricity_meter_month', views.electro_counters_statistics_for_the_month,

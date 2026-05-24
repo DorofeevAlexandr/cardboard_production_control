@@ -8,7 +8,8 @@ from .forms import ReadDateForElectroCounters, ReadMonthForElectroCounters
 from .work_with_electrocouners import get_counters_from_base, client_influxdb, read_electro_counters_values
 
 
-menu = [{'title': "Данные за день", 'url_name': 'electro_counters_statistics_for_the_day'},
+menu = [{'title': "Показания счетчиков", 'url_name': 'electro_counters'},
+        {'title': "Данные за день", 'url_name': 'electro_counters_statistics_for_the_day'},
         {'title': "Данные за месяц", 'url_name': 'electro_counters_statistics_for_the_month'},
         {'title': "Настройка", 'url_name': 'tuning'},
 ]
@@ -32,6 +33,17 @@ def open_pdf_file_view(request, filename):
         'filename': f'/{filename}',
     }
     return render(request, 'cardboard_production/open_pdf.html', context=data)
+
+
+def electro_counters_value(request):
+    counters = get_counters_from_base()
+    title = f'Показания электросчетчиков'
+    data = {
+        'title': title,
+        'counters': counters,
+        'menu': menu,
+    }
+    return render(request, 'cardboard_production/electro_counters_value.html', context=data)
 
 
 def electro_counters_statistics_for_the_day(request):
