@@ -11,6 +11,7 @@ from .work_with_electrocouners import get_counters_from_base, client_influxdb, r
 menu = [{'title': "Показания счетчиков", 'url_name': 'electro_counters'},
         {'title': "Данные за день", 'url_name': 'electro_counters_statistics_for_the_day'},
         {'title': "Данные за месяц", 'url_name': 'electro_counters_statistics_for_the_month'},
+        {'title': "Отчеты", 'url_name': 'reports'},
         {'title': "Настройка", 'url_name': 'tuning'},
 ]
 
@@ -106,3 +107,36 @@ def electro_counters_statistics_for_the_month(request):
         'menu': menu,
     }
     return render(request, 'cardboard_production/electro_counters.html', context=data)
+
+
+def reports_for_the_month(request):
+    count_values = []
+    time = []
+    counters = get_counters_from_base()
+    title = f'Потребление электроэнергии - Данные за месяц'
+    if request.method == 'POST':
+        form = ReadMonthForElectroCounters(request.POST, request.FILES)
+        if form.is_valid():
+            calendar_date = form.cleaned_data.get('start_day', None)
+            title = f'Потребление электроэнергии - Данные за {calendar_date.strftime('%B %Y')}г.'
+            start_date = dt.date(year=calendar_date.year,
+                                 month=calendar_date.month,
+                                 day=1)
+            if start_date:
+                client = client_influxdb()
+                time, count_values = read_electro_counters_values(client=client,
+                                                                  date=start_date,
+                                                                  data_reading_period='1 month')
+                client.close()
+    else:
+        form = ReadMonthForElectroCounters()
+    counter_values = [[0 for _ in range(31)] for _ in range(24)]
+    data = {
+        'title': title,
+        'counters': counters,
+        'counter_values': counter_values,
+        'form': form,
+        'times': time,
+        'menu': menu,
+    }
+    return render(request, 'cardboard_production/electro_counters_report.html', context=data)

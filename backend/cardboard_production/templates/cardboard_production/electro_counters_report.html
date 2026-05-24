@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<ul class="list-articles">
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p><button type="submit">Обновить</button></p>
+    </form>
+
+<div class="tabs">
+ {% for c in counters %}
+    <input type="radio" name="inset" value="" id="tab_{{forloop.counter}}" checked>
+    <label for="tab_{{forloop.counter}}">{{c.number}} - {{c.client_name}}</label>
+ {% endfor %}
+
+    {% for c in counters %}
+    <div id="txt_{{forloop.counter}}">
+
+    <table width="100%" border="1">
+        <tr>
+            <th>  </th>
+            {% for _ in counter_values.0 %}
+                <th> {{forloop.counter}} </th>
+            {% endfor %}
+        </tr>
+
+        {% for hour_values in counter_values %}
+            <tr>
+                <th> {{forloop.counter}} </th>
+                {% for day_values in hour_values %}
+                    <td> {{day_values}} </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    </div>
+    {% endfor %}
+
+</div>
+
+</ul>
+
+{% endblock %}

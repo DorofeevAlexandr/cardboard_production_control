@@ -10,6 +10,8 @@ urlpatterns = [
          name='electro_counters_statistics_for_the_day'),
     path('electricity_meter_month', views.electro_counters_statistics_for_the_month,
          name='electro_counters_statistics_for_the_month'),
+    path('reports_month', views.reports_for_the_month,
+         name='reports'),
     path('tuning', views.tuning, name='tuning'),
     path('open_pdf_file_view/<path:filename>/', views.open_pdf_file_view, name='open_pdf_file_view'),
 ]
