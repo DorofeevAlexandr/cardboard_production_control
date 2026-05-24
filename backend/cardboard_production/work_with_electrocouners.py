@@ -122,16 +122,41 @@ def get_time_period(date: dt.date, data_reading_period='1 day', st_step_time='1h
     return time_start, time_end
 
 
+def parse_electro_counters_values(tables):
+    times = {}
+    values = {}
+    for table in tables:
+        for record in table.records:
+            # print('--------------')
+            # print(record)
+            # print(record['_time'], record['_field'], record['_value'])
+            measurement_time = (dt.datetime(year=record['_time'].year,
+                                            month=record['_time'].month,
+                                            day=record['_time'].day,
+                                            hour=record['_time'].hour,
+                                            minute=record['_time'].minute) +
+                                dt.timedelta(hours=3))
+
+            if measurement_time not in times.keys():
+                times[measurement_time] = {}
+
+            client_name = record['client_name']
+            if client_name not in values.keys():
+                values[client_name] = {'count_val': [],
+                                       'color': generate_random_hex_color(const_collor_number=len(values)),
+                                       }
+                # print(client_name)
+
+            values[client_name]['count_val'].append(record['_value'])
+
+    return times, values
+
 def read_electro_counters_values(client, date: dt.date, data_reading_period='1 day', st_step_time='1h'):
     org = "12"
     query_api = client.query_api()
 
     time_start, time_end = get_time_period(date, data_reading_period)
 
-    # time_start = time_start - dt.timedelta(hours=1)
-
-    # t1 = get_times(time_start, time_end, step_minutes=60)
-    # print(t1)
     st_time_start = f'{time_start.isoformat()}+03:00'
     st_time_end = f'{time_end.isoformat()}+03:00'
 
@@ -144,32 +169,7 @@ def read_electro_counters_values(client, date: dt.date, data_reading_period='1 d
 
 
     tables = query_api.query(query, org=org)
-    times = {}
-    values = {}
-    for table in tables:
-      for record in table.records:
-        # print('--------------')
-        # print(record)
-        # print(record['_time'], record['_field'], record['_value'])
-        measurement_time = (dt.datetime(year=record['_time'].year,
-                                       month=record['_time'].month,
-                                       day=record['_time'].day,
-                                       hour=record['_time'].hour,
-                                       minute=record['_time'].minute) +
-                            dt.timedelta(hours=3))
-
-        if measurement_time not in times.keys():
-            times[measurement_time] = {}
-
-        client_name = record['client_name']
-        if client_name not in values.keys():
-            values[client_name] = {'count_val' : [],
-                                   'color' : generate_random_hex_color(const_collor_number=len(values)),
-            }
-            # print(client_name)
-
-        values[client_name]['count_val'].append(record['_value'])
-
+    times, values = parse_electro_counters_values(tables=tables)
     power_consumption(values)
 
     # print(times)
