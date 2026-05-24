@@ -60,7 +60,9 @@ def electro_counters_statistics_for_the_day(request):
                 title = f'Потребление электроэнергии - Данные за {select_date.strftime('%d %B %Y')}г.'
                 client = client_influxdb()
                 time, count_values = read_electro_counters_values(client=client,
-                                             date=select_date)
+                                                                  date=select_date,
+                                                                  data_reading_period='1 day',
+                                                                  st_step_time='1h')
                 client.close()
     else:
         form = ReadDateForElectroCounters()
@@ -93,7 +95,8 @@ def electro_counters_statistics_for_the_month(request):
                 client = client_influxdb()
                 time, count_values = read_electro_counters_values(client=client,
                                                                   date=start_date,
-                                                                  data_reading_period='1 month')
+                                                                  data_reading_period='1 month',
+                                                                  st_step_time='1d')
                 client.close()
     else:
         form = ReadMonthForElectroCounters()
@@ -126,7 +129,8 @@ def reports_for_the_month(request):
                 client = client_influxdb()
                 time, count_values = read_electro_counters_values(client=client,
                                                                   date=start_date,
-                                                                  data_reading_period='1 month')
+                                                                  data_reading_period='1 month',
+                                                                  st_step_time='1h')
                 client.close()
     else:
         form = ReadMonthForElectroCounters()

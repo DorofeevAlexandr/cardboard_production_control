@@ -94,7 +94,7 @@ def get_times(time_start: dt.datetime, time_end:dt.datetime, step_minutes=60):
     return times
 
 
-def get_time_period(date: dt.date, data_reading_period='1 day'):
+def get_time_period(date: dt.date, data_reading_period='1 day', st_step_time='1h'):
     time_start = dt.datetime(year=date.year,
                              month=date.month,
                              day=date.day,
@@ -103,7 +103,6 @@ def get_time_period(date: dt.date, data_reading_period='1 day'):
                              second=0)
     if data_reading_period == '1 day':
         time_end = time_start +  dt.timedelta(days=1)
-        time_start = time_start - dt.timedelta(hours=1)
     elif data_reading_period == '1 month':
         end_date = date + relativedelta(months=1)
         time_end = dt.datetime(year=end_date.year,
@@ -112,28 +111,22 @@ def get_time_period(date: dt.date, data_reading_period='1 day'):
                                  hour=0,
                                  minute=0,
                                  second=0)
-        time_start = time_start - dt.timedelta(days=1)
     else:
         time_end = time_start
+
+    if st_step_time == '1h':
+        time_start = time_start - dt.timedelta(hours=1)
+    if st_step_time == '1d':
+        time_start = time_start - dt.timedelta(days=1)
+
     return time_start, time_end
 
 
-def get_step_time(data_reading_period='1 day'):
-    if data_reading_period == '1 day':
-        return '1h'
-    elif data_reading_period == '1 month':
-        return '1d'
-    else:
-        return ''
-
-
-
-def read_electro_counters_values(client, date: dt.date, data_reading_period='1 day'):
+def read_electro_counters_values(client, date: dt.date, data_reading_period='1 day', st_step_time='1h'):
     org = "12"
     query_api = client.query_api()
 
     time_start, time_end = get_time_period(date, data_reading_period)
-    st_step_time = get_step_time(data_reading_period)
 
     # time_start = time_start - dt.timedelta(hours=1)
 
