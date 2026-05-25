@@ -9,36 +9,44 @@
         <p><button type="submit">Обновить</button></p>
     </form>
 
-<div class="tabs">
- {% for client_name in reports.keys %}
-    <input type="radio" name="inset" value="" id="tab_{{forloop.counter}}" checked>
-    <label for="tab_{{forloop.counter}}">{{forloop.counter}} - {{client_name}}</label>
- {% endfor %}
+    <hr>
 
-    {% for client_name, counter_values in reports.items %}
-    <div id="txt_{{forloop.counter}}">
+    <div class="tabs">
+     {% for client_name in reports.keys %}
+        <input type="radio" name="inset" value="" id="tab_{{forloop.counter}}" checked>
+        <label for="tab_{{forloop.counter}}">{{forloop.counter}} - {{client_name}}</label>
+     {% endfor %}
 
-    <table width="100%" border="1">
-        <tr>
-            <th>  </th>
-            {% for _ in counter_values.0 %}
-                <th> {{forloop.counter}} </th>
-            {% endfor %}
-        </tr>
+        {% for client_name, counter_values in reports.items %}
+        <div id="txt_{{forloop.counter}}">
 
-        {% for hour_values in counter_values %}
+        <table width="100%" border="1">
+            <tr>  <th width="100%" colspan="32" > Сутки потребления электроэнергии </th> </tr>
             <tr>
-                <th> {{forloop.counter|add:"-1"}}:00 - {{forloop.counter}}:00 </th>
-                {% for day_values in hour_values %}
-                    <td> {{day_values}} </td>
+                <th> Часы </th>
+                {% for _ in counter_values.0 %}
+                    <th> {{forloop.counter}} </th>
                 {% endfor %}
             </tr>
-        {% endfor %}
-    </table>
-    </div>
-    {% endfor %}
 
-</div>
+            {% for hour_values in counter_values %}
+                <tr>
+                    <th> {{forloop.counter|add:"-1"}} - {{forloop.counter}} </th>
+                    {% for day_values in hour_values %}
+                        <td> {{day_values}} </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+
+            <tr>
+                <th> Итого за сутки </th>
+            </tr>
+
+        </table>
+        </div>
+        {% endfor %}
+
+    </div>
 
 </ul>
 
