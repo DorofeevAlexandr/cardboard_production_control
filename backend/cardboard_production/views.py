@@ -5,7 +5,8 @@ from django.http import (HttpResponse, HttpResponseNotFound, Http404, HttpRespon
 import mimetypes
 
 from .forms import ReadDateForElectroCounters, ReadMonthForElectroCounters
-from .work_with_electrocouners import get_counters_from_base, client_influxdb, read_electro_counters_values
+from .work_with_electrocouners import (get_counters_from_base, client_influxdb, read_electro_counters_values,
+                                       get_reports_electro_counters)
 
 
 menu = [{'title': "Показания счетчиков", 'url_name': 'electro_counters'},
@@ -113,9 +114,7 @@ def electro_counters_statistics_for_the_month(request):
 
 
 def reports_for_the_month(request):
-    count_values = []
-    time = []
-    counters = get_counters_from_base()
+    reports = {}
     title = f'Потребление электроэнергии - Данные за месяц'
     if request.method == 'POST':
         form = ReadMonthForElectroCounters(request.POST, request.FILES)
@@ -127,20 +126,20 @@ def reports_for_the_month(request):
                                  day=1)
             if start_date:
                 client = client_influxdb()
-                time, count_values = read_electro_counters_values(client=client,
+                time, counter_values = read_electro_counters_values(client=client,
                                                                   date=start_date,
                                                                   data_reading_period='1 month',
                                                                   st_step_time='1h')
+                reports = get_reports_electro_counters(counter_values, cur_month=start_date.month)
                 client.close()
     else:
         form = ReadMonthForElectroCounters()
-    counter_values = [[0 for _ in range(31)] for _ in range(24)]
+
+
     data = {
         'title': title,
-        'counters': counters,
-        'counter_values': counter_values,
+        'reports': reports,
         'form': form,
-        'times': time,
         'menu': menu,
     }
     return render(request, 'cardboard_production/electro_counters_report.html', context=data)

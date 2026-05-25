@@ -142,12 +142,14 @@ def parse_electro_counters_values(tables):
 
             client_name = record['client_name']
             if client_name not in values.keys():
-                values[client_name] = {'count_val': [],
+                values[client_name] = {'count_val' : [],
+                                       'times' : [],
                                        'color': generate_random_hex_color(const_collor_number=len(values)),
                                        }
                 # print(client_name)
 
             values[client_name]['count_val'].append(record['_value'])
+            values[client_name]['times'].append(measurement_time)
 
     return times, values
 
@@ -165,7 +167,7 @@ def read_electro_counters_values(client, date: dt.date, data_reading_period='1 d
      |> aggregateWindow(every: {st_step_time}, fn: max, createEmpty: false)
      |> group(columns: ["_time"])
      |> filter(fn: (r) => r._field == "energy")"""
-    print(query)
+    # print(query)
 
 
     tables = query_api.query(query, org=org)
@@ -175,6 +177,20 @@ def read_electro_counters_values(client, date: dt.date, data_reading_period='1 d
     # print(times)
     # print(values)
     return times, values
+
+
+def get_reports_electro_counters(values:dict, cur_month):
+    reports = {}
+    for client_name, l_value in values.items():
+        if client_name not in reports.keys():
+            reports[client_name] = [[0 for _ in range(31)] for _ in range(24)]
+        for ind, time in enumerate(l_value['times']):
+            if time.month != cur_month:
+                continue
+            day = time.day
+            hour = time.hour
+            reports[client_name][hour][day - 1] = str(l_value['count_val'][ind] / 1000)
+    return reports
 
 
 if __name__ == '__main__':

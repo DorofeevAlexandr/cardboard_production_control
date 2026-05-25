@@ -10,12 +10,12 @@
     </form>
 
 <div class="tabs">
- {% for c in counters %}
+ {% for client_name in reports.keys %}
     <input type="radio" name="inset" value="" id="tab_{{forloop.counter}}" checked>
-    <label for="tab_{{forloop.counter}}">{{c.number}} - {{c.client_name}}</label>
+    <label for="tab_{{forloop.counter}}">{{forloop.counter}} - {{client_name}}</label>
  {% endfor %}
 
-    {% for c in counters %}
+    {% for client_name, counter_values in reports.items %}
     <div id="txt_{{forloop.counter}}">
 
     <table width="100%" border="1">
@@ -28,7 +28,7 @@
 
         {% for hour_values in counter_values %}
             <tr>
-                <th> {{forloop.counter}} </th>
+                <th> {{forloop.counter|add:"-1"}}:00 - {{forloop.counter}}:00 </th>
                 {% for day_values in hour_values %}
                     <td> {{day_values}} </td>
                 {% endfor %}
