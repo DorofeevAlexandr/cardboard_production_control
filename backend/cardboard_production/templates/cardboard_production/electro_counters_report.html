@@ -6,7 +6,8 @@
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <p><button type="submit">Обновить</button></p>
+        <p><button type="submit" name="b_update">Обновить</button></p>
+        <p><button type="submit" name="b_save">Сохранить отчёт</button></p>
     </form>
 
     <hr>

@@ -1,11 +1,14 @@
 import datetime as dt
 from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
+from django.http import HttpResponse
+import io
 import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 import operator
 import random
+import xlsxwriter
 
 from.models import ElectroCounters
 
@@ -200,6 +203,50 @@ def calculate_result_value(reports:dict):
         for hour_values in report:
             result = list(map(operator.add, result, map(float, hour_values)))
         report.append(result)
+
+
+def save_report_in_excel(reports:dict, date:dt.date, title:str):
+    output = io.BytesIO()
+    workbook = xlsxwriter.Workbook(output)
+    bold_format = workbook.add_format({'bold': True, 'border': 2, 'align': 'center'})
+    def_format = workbook.add_format({'bold': False, 'border': 1})
+
+    for client_name, counter_values in reports.items():
+        worksheet = workbook.add_worksheet(client_name[0:30])
+
+        worksheet.write(0, 0, title)
+        worksheet.write(1, 0, client_name)
+
+        worksheet.set_column(0, 0, 17)
+
+        worksheet.merge_range("A3:AF3", "Сутки потребления электроэнергии", bold_format)
+
+        row_offset = 3
+        col_offset = 0
+        worksheet.write(row_offset, col_offset, 'Часы', bold_format)
+        for day in range(31):
+            worksheet.write(row_offset, col_offset + day + 1, day + 1, bold_format)
+
+        row_offset = 4
+        col_offset = 0
+        for ind_r, hour_values in enumerate(counter_values):
+            if ind_r != 24:
+                worksheet.write(row_offset + ind_r, col_offset, f'{ind_r} - {ind_r + 1}',bold_format)
+            else:
+                worksheet.write(row_offset + ind_r, col_offset, 'Итого за сутки', bold_format)
+
+            for ind_c, day_values in enumerate(hour_values):
+                worksheet.write(row_offset + ind_r, col_offset + ind_c + 1,
+                                float(day_values), def_format)
+
+    workbook.close()
+    output.seek(0)
+
+    response = HttpResponse(output.read(),
+                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                            )
+    response['Content-Disposition'] =  f'attachment; filename=Report_{date.strftime('%m_%Y')}.xlsx'
+    return response
 
 
 if __name__ == '__main__':
