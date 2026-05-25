@@ -6,7 +6,7 @@ import mimetypes
 
 from .forms import ReadDateForElectroCounters, ReadMonthForElectroCounters
 from .work_with_electrocouners import (get_counters_from_base, client_influxdb, read_electro_counters_values,
-                                       get_reports_electro_counters)
+                                       get_reports_electro_counters, calculate_result_value)
 
 
 menu = [{'title': "Показания счетчиков", 'url_name': 'electro_counters'},
@@ -131,6 +131,7 @@ def reports_for_the_month(request):
                                                                   data_reading_period='1 month',
                                                                   st_step_time='1h')
                 reports = get_reports_electro_counters(counter_values, cur_month=start_date.month)
+                calculate_result_value(reports)
                 client.close()
     else:
         form = ReadMonthForElectroCounters()

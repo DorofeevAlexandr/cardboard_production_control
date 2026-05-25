@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
+import operator
 import random
 
 from.models import ElectroCounters
@@ -191,6 +192,14 @@ def get_reports_electro_counters(values:dict, cur_month):
             hour = time.hour
             reports[client_name][hour][day - 1] = str(l_value['count_val'][ind] / 1000)
     return reports
+
+
+def calculate_result_value(reports:dict):
+    for report in reports.values():
+        result = [0 for _ in range(31)]
+        for hour_values in report:
+            result = list(map(operator.add, result, map(float, hour_values)))
+        report.append(result)
 
 
 if __name__ == '__main__':

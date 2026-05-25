@@ -30,17 +30,22 @@
             </tr>
 
             {% for hour_values in counter_values %}
+                {% if not forloop.last %}
                 <tr>
                     <th> {{forloop.counter|add:"-1"}} - {{forloop.counter}} </th>
                     {% for day_values in hour_values %}
                         <td> {{day_values}} </td>
                     {% endfor %}
                 </tr>
+                {% else %}
+                     <tr>
+                        <th> Итого за сутки </th>
+                        {% for day_values in hour_values %}
+                            <td> {{day_values|floatformat:2}} </td>
+                        {% endfor %}
+                    </tr>
+                {% endif %}
             {% endfor %}
-
-            <tr>
-                <th> Итого за сутки </th>
-            </tr>
 
         </table>
         </div>
