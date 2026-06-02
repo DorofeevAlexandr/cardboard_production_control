@@ -161,7 +161,7 @@ class StatementAdmin(admin.ModelAdmin):
                     'color_count', 'stamp',
                     # 'width', 'length',
                     'area',
-                    # 'statement_start_time', 'statement_end_time', 'minutes',
+                    'statement_start_time', 'statement_end_time', 'minutes',
                     'downtime', 'quantity_sent_production', 'quantity_manufactured',
                     'defects_percent', 'speed_manufactured', 'manufactured_area')
     # readonly_fields = ['order__stamp', 'order__width', 'order__length', 'order__area',]

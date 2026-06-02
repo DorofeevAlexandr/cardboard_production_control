@@ -4,11 +4,12 @@ from django.http import (HttpResponse, HttpResponseNotFound, Http404, HttpRespon
                          HttpResponsePermanentRedirect, FileResponse)
 import io
 import mimetypes
+import xlsxwriter
 
 from .forms import ReadDateForElectroCounters, ReadMonthForElectroCounters
 from .work_with_electrocouners import (get_counters_from_base, client_influxdb, read_electro_counters_values,
                                        get_reports_electro_counters, calculate_result_value, save_report_in_excel)
-import xlsxwriter
+from .work_with_excel import statement_to_excel
 
 
 menu = [{'title': "Показания счетчиков", 'url_name': 'electro_counters'},
@@ -155,6 +156,7 @@ def download_statement(request, statement_date:str):
     output = io.BytesIO()
     workbook = xlsxwriter.Workbook(output)
 
+    statement_to_excel(workbook, statement_date)
 
     workbook.close()
     output.seek(0)
