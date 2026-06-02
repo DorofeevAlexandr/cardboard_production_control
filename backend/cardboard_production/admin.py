@@ -157,7 +157,7 @@ class StatementAdmin(admin.ModelAdmin):
     # Отображение полей в списке
     fields = ('statement_date', 'order', 'statement_start_time',
               'statement_end_time', 'downtime', 'quantity_sent_production', 'quantity_manufactured')
-    list_display = ('statement_date', 'order',
+    list_display = ('statement_date', 'export_statement', 'order',
                     'color_count', 'stamp',
                     # 'width', 'length',
                     'area',
@@ -253,6 +253,12 @@ class StatementAdmin(admin.ModelAdmin):
             return "-"
         except:
             return "-"
+
+    @admin.display(description="Загрузить", ordering='statement_date')
+    def export_statement(self, statement: Statement):
+        if statement.statement_date:
+            return mark_safe(f"<a href='/download_statement/{statement.statement_date}/'target='_self'>&#128190;</a>")
+        return "-"
 
 
 @admin.register(ElectroCounters)

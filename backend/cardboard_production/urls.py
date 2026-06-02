@@ -14,4 +14,5 @@ urlpatterns = [
          name='reports'),
     path('tuning', views.tuning, name='tuning'),
     path('open_pdf_file_view/<path:filename>/', views.open_pdf_file_view, name='open_pdf_file_view'),
+    path('download_statement/<path:statement_date>/', views.download_statement, name='download_statement'),
 ]

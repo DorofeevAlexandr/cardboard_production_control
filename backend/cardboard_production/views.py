@@ -2,11 +2,13 @@ import datetime as  dt
 from django.shortcuts import render, redirect
 from django.http import (HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect,
                          HttpResponsePermanentRedirect, FileResponse)
+import io
 import mimetypes
 
 from .forms import ReadDateForElectroCounters, ReadMonthForElectroCounters
 from .work_with_electrocouners import (get_counters_from_base, client_influxdb, read_electro_counters_values,
                                        get_reports_electro_counters, calculate_result_value, save_report_in_excel)
+import xlsxwriter
 
 
 menu = [{'title': "Показания счетчиков", 'url_name': 'electro_counters'},
@@ -146,3 +148,19 @@ def reports_for_the_month(request):
         'menu': menu,
     }
     return render(request, 'cardboard_production/electro_counters_report.html', context=data)
+
+
+def download_statement(request, statement_date:str):
+
+    output = io.BytesIO()
+    workbook = xlsxwriter.Workbook(output)
+
+
+    workbook.close()
+    output.seek(0)
+
+    response = HttpResponse(output.read(),
+                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                            )
+    response['Content-Disposition'] = f'attachment; filename=Statement_{statement_date.replace('-','_')}.xlsx'
+    return response
