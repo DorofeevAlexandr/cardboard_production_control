@@ -33,7 +33,7 @@ def defects_percent(product: Statement):
 def speed_manufactured(product: Statement):
     try:
         if product.quantity_manufactured:
-            return round(product.quantity_manufactured / get_minutes(product))
+            return round(product.quantity_manufactured / get_working_minutes(product))
         else:
             return  "-"
     except:
@@ -89,7 +89,7 @@ def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
     summ_manufactured_area = 0
 
     queryset = Statement.objects.filter(statement_date=statement_date).order_by('statement_start_time')
-    print(queryset)
+    # print(queryset)
     for product in queryset:
         row_offset += 1
         ws.write(row_offset, 0, product.statement_date.strftime('%d.%m.%Y'), def_format)
