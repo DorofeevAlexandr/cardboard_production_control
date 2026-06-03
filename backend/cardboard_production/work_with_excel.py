@@ -64,9 +64,9 @@ def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
     left_format = workbook.add_format({'bold': False, 'border': 1})
     def_format = workbook.add_format({'bold': False, 'border': 1, 'align': 'center'})
 
-    ws.write(6, 6, 'Ведомость  данных изготовления  продукции на линиях')
+    ws.write(2, 6, 'Ведомость  данных изготовления  продукции на линиях')
 
-    row_offset = 8
+    row_offset = 4
     ws.write(row_offset, 0, 'дата', bold_format)
     ws.write(row_offset, 1, 'продукция', bold_format)
     ws.write(row_offset, 2, 'печать', bold_format)
@@ -131,3 +131,8 @@ def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
     ws.write(row_offset, 13, '', bold_format)
     ws.write(row_offset, 14, '', bold_format)
     ws.write(row_offset, 15, summ_manufactured_area, bold_format)
+
+    ws.print_area(0, 0, 15, 15)
+    ws.set_paper(9)
+    ws.set_landscape()
+    ws.fit_to_pages(1, 1)
