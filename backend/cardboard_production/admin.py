@@ -257,7 +257,7 @@ class StatementAdmin(admin.ModelAdmin):
     @admin.display(description="Загрузить", ordering='statement_date')
     def export_statement(self, statement: Statement):
         if statement.statement_date:
-            return mark_safe(f"<a href='/download_statement/{statement.statement_date}/'target='_self'>&#128190;</a>")
+            return mark_safe(f"<a href='/download_statement/{statement.statement_date}/'target='_self'><&#128194;></a>")
         return "-"
 
 
