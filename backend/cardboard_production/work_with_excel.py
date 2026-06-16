@@ -75,36 +75,41 @@ def manufactured_area(product: Statement):
 def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
     ws = workbook.add_worksheet('Ведомость')
 
+    ws.set_row(4, 50)
+
     ws.set_column(0, 0, 10)
     ws.set_column(1, 1, 40)
     ws.set_column(2, 3, 10)
     ws.set_column(4, 6, 12)
     ws.set_column(7, 9, 10)
-    ws.set_column(10, 16, 12)
+    ws.set_column(10, 11, 13)
+    ws.set_column(12, 16, 12)
 
     bold_format = workbook.add_format({'bold': True, 'border': 2, 'align': 'center'})
+    bold_format.set_align('vcenter')
+    bold_format.set_text_wrap(True)
     left_format = workbook.add_format({'bold': False, 'border': 1})
     def_format = workbook.add_format({'bold': False, 'border': 1, 'align': 'center'})
 
     ws.write(2, 6, 'Ведомость  данных изготовления  продукции на линиях')
 
     row_offset = 4
-    ws.write(row_offset, 0, 'дата', bold_format)
-    ws.write(row_offset, 1, 'продукция', bold_format)
-    ws.write(row_offset, 2, 'печать', bold_format)
-    ws.write(row_offset, 3, 'штамп', bold_format)
-    ws.write(row_offset, 4, 'ширина,мм', bold_format)
-    ws.write(row_offset, 5, 'длина мм', bold_format)
-    ws.write(row_offset, 6, 'площадь', bold_format)
-    ws.write(row_offset, 7, 'начало', bold_format)
-    ws.write(row_offset, 8, 'окончан', bold_format)
-    ws.write(row_offset, 9, 'минуты', bold_format)
-    ws.write(row_offset, 10, 'пропущено', bold_format)
-    ws.write(row_offset, 11, 'изготовлено', bold_format)
-    ws.write(row_offset, 12, '% брака', bold_format)
-    ws.write(row_offset, 13, 'произ.шт/мин', bold_format)
-    ws.write(row_offset, 14, 'простой', bold_format)
-    ws.write(row_offset, 15, 'общие м2', bold_format)
+    ws.write(row_offset, 0, 'Дата', bold_format)
+    ws.write(row_offset, 1, 'Наименование продукции', bold_format)
+    ws.write(row_offset, 2, 'Печать', bold_format)
+    ws.write(row_offset, 3, 'Штамп', bold_format)
+    ws.write(row_offset, 4, 'Ширина, мм', bold_format)
+    ws.write(row_offset, 5, 'Длина, мм', bold_format)
+    ws.write(row_offset, 6, 'Площадь м²', bold_format)
+    ws.write(row_offset, 7, 'Начало', bold_format)
+    ws.write(row_offset, 8, 'Окончан.', bold_format)
+    ws.write(row_offset, 9, 'Минуты', bold_format)
+    ws.write(row_offset, 10, 'Пропущено шт', bold_format)
+    ws.write(row_offset, 11, 'Изготовлено шт', bold_format)
+    ws.write(row_offset, 12, 'Брак %', bold_format)
+    ws.write(row_offset, 13, 'Произвед. шт/мин', bold_format)
+    ws.write(row_offset, 14, 'Простой', bold_format)
+    ws.write(row_offset, 15, 'Общая площадь м²', bold_format)
 
     summ_working_minutes = 0
     summ_quantity_sent_production = 0
