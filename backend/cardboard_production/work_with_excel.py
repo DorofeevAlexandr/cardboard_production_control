@@ -30,6 +30,18 @@ def defects_percent(product: Statement):
         return "-"
 
 
+def summ_defects_percent(quantity_sent_production: int, quantity_manufactured: int):
+    try:
+        if quantity_manufactured != 0:
+            k_defects = (quantity_sent_production - quantity_manufactured) / quantity_manufactured
+            result = round(k_defects * 100.0, 1)
+            return result
+        else:
+            return  "-"
+    except:
+        return "-"
+
+
 def speed_manufactured(product: Statement):
     try:
         if product.quantity_manufactured:
@@ -85,6 +97,7 @@ def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
     ws.write(row_offset, 15, 'общие м2', bold_format)
 
     summ_working_minutes = 0
+    summ_quantity_sent_production = 0
     summ_quantity_manufactured = 0
     summ_manufactured_area = 0
 
@@ -105,6 +118,7 @@ def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
         ws.write(row_offset, 8, product.statement_end_time.strftime('%H:%M'), def_format)
         summ_working_minutes += get_working_minutes(product)
         ws.write(row_offset, 9, get_working_minutes(product), def_format)
+        summ_quantity_sent_production += product.quantity_sent_production
         ws.write(row_offset, 10, product.quantity_sent_production, def_format)
         summ_quantity_manufactured += product.quantity_manufactured
         ws.write(row_offset, 11, product.quantity_manufactured, def_format)
@@ -125,9 +139,10 @@ def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
     ws.write(row_offset, 7, '', bold_format)
     ws.write(row_offset, 8, '', bold_format)
     ws.write(row_offset, 9, summ_working_minutes, bold_format)
-    ws.write(row_offset, 10, '', bold_format)
+    ws.write(row_offset, 10, summ_quantity_sent_production, bold_format)
     ws.write(row_offset, 11, summ_quantity_manufactured, bold_format)
-    ws.write(row_offset, 12, '', bold_format)
+    ws.write(row_offset, 12, summ_defects_percent(quantity_sent_production=summ_quantity_sent_production,
+                                                            quantity_manufactured=summ_quantity_manufactured), bold_format)
     ws.write(row_offset, 13, '', bold_format)
     ws.write(row_offset, 14, '', bold_format)
     ws.write(row_offset, 15, summ_manufactured_area, bold_format)
