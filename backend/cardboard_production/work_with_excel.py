@@ -45,7 +45,17 @@ def summ_defects_percent(quantity_sent_production: int, quantity_manufactured: i
 def speed_manufactured(product: Statement):
     try:
         if product.quantity_manufactured:
-            return round(product.quantity_manufactured / get_working_minutes(product))
+            return round(product.quantity_manufactured / get_working_minutes(product), 1)
+        else:
+            return  "-"
+    except:
+        return "-"
+
+
+def summ_speed_manufactured(quantity_manufactured:int, summ_working_minutes:int):
+    try:
+        if summ_working_minutes != 0:
+            return round(quantity_manufactured / summ_working_minutes, 1)
         else:
             return  "-"
     except:
@@ -56,7 +66,7 @@ def manufactured_area(product: Statement):
     try:
         if product.order and product.quantity_manufactured:
             area = product.order.width * product.order.length * product.quantity_manufactured / (1000 * 1000)
-            return round(area)
+            return round(area, 1)
         return 0
     except:
         return 0
@@ -143,7 +153,8 @@ def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
     ws.write(row_offset, 11, summ_quantity_manufactured, bold_format)
     ws.write(row_offset, 12, summ_defects_percent(quantity_sent_production=summ_quantity_sent_production,
                                                             quantity_manufactured=summ_quantity_manufactured), bold_format)
-    ws.write(row_offset, 13, '', bold_format)
+    ws.write(row_offset, 13, summ_speed_manufactured(quantity_manufactured=summ_quantity_manufactured,
+                                                               summ_working_minutes=summ_working_minutes), bold_format)
     ws.write(row_offset, 14, '', bold_format)
     ws.write(row_offset, 15, summ_manufactured_area, bold_format)
 
