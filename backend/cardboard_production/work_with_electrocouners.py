@@ -88,14 +88,17 @@ def power_consumption(values):
 
 def summ_power_consumption(values):
     result = []
+    times = []
     for counter in values:
         len_values = len(values[counter]['count_val'])
         if len(result) < len_values:
-            result.extend([0 for _ in range(len_values - len(result))])
+            len_result = len(result)
+            result.extend([0 for _ in range(len_values - len_result)])
+            times.extend(values[counter]['times'][len_result : len_values])
         result = list(map(lambda x, y: x + y, result, values[counter]['count_val']))
 
     values['Суммарное потребление'] = {'count_val': result,
-                           'times': [],
+                           'times': times,
                            'color': '#000000',
                            }
 
