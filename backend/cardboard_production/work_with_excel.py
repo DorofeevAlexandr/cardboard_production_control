@@ -85,13 +85,15 @@ def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
     ws.set_column(10, 11, 13)
     ws.set_column(12, 16, 12)
 
+    title_format = workbook.add_format({'bold': True, 'align': 'center'})
+
     bold_format = workbook.add_format({'bold': True, 'border': 2, 'align': 'center'})
     bold_format.set_align('vcenter')
     bold_format.set_text_wrap(True)
     left_format = workbook.add_format({'bold': False, 'border': 1})
     def_format = workbook.add_format({'bold': False, 'border': 1, 'align': 'center'})
 
-    ws.write(2, 6, 'Ведомость  данных изготовления  продукции на линиях')
+    ws.merge_range("A3:P3", 'Ведомость  данных изготовления  продукции на линиях', title_format)
 
     row_offset = 4
     ws.write(row_offset, 0, 'Дата', bold_format)
