@@ -17,13 +17,21 @@
             var ctx = document.getElementById('myChart');
 
             var myChart = new Chart(ctx, {
-            type: 'bar',
+
             data: {
 labels : [{% for item in times %} "{{item}}", {% endfor %}],
 
 datasets: [
 {% for counter, values in count_values.items %}
                 {
+                {% if counter == 'Суммарное потребление' %}
+                    type: 'line',
+                    order: 0,
+                    borderColor: '{{ values.color }}',
+                {% else %}
+                    type: 'bar',
+                    order: 1,
+                {% endif %}
                 label: '{{counter}}, кВт/ч',
                 data : [
                 {% for value in values.count_val %}

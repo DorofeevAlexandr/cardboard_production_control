@@ -86,6 +86,19 @@ def power_consumption(values):
             values[cn]['count_val'][ind] = max(power_consumption, 0)
 
 
+def summ_power_consumption(values):
+    result = []
+    for counter in values:
+        len_values = len(values[counter]['count_val'])
+        if len(result) < len_values:
+            result.extend([0 for _ in range(len_values - len(result))])
+        result = list(map(lambda x, y: x + y, result, values[counter]['count_val']))
+
+    values['Суммарное потребление'] = {'count_val': result,
+                           'times': [],
+                           'color': '#000000',
+                           }
+
 
 def get_times(time_start: dt.datetime, time_end:dt.datetime, step_minutes=60):
     times = []
@@ -177,7 +190,7 @@ def read_electro_counters_values(client, date: dt.date, data_reading_period='1 d
     tables = query_api.query(query, org=org)
     times, values = parse_electro_counters_values(tables=tables)
     power_consumption(values)
-
+    summ_power_consumption(values)
     # print(times)
     # print(values)
     return times, values
