@@ -166,3 +166,19 @@ def download_statement(request, statement_date:str):
                             )
     response['Content-Disposition'] = f'attachment; filename=Statement_{statement_date.replace('-','_')}.xlsx'
     return response
+
+
+def download_invoice(request, invoice_date:str):
+    output = io.BytesIO()
+    workbook = xlsxwriter.Workbook(output)
+
+    statement_to_excel(workbook, invoice_date)
+
+    workbook.close()
+    output.seek(0)
+
+    response = HttpResponse(output.read(),
+                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                            )
+    response['Content-Disposition'] = f'attachment; filename=Invoice_{invoice_date.replace('-','_')}.xlsx'
+    return response

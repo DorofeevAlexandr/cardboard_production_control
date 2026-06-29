@@ -157,8 +157,8 @@ class CuttingCardboard(UUIDMixin, TimeStampedMixin):
 
 class Statement(UUIDMixin, TimeStampedMixin):
     class Status(models.IntegerChoices):
-        IN_THE_QUEUE  = 0, 'В очереди'
-        IS_IN_PRODUCTION = 1, 'В производстве'
+        IN_THE_QUEUE  = 0, 'Нет'
+        # IS_IN_PRODUCTION = 1, '-'
         MANUFACTURED = 2, 'Печатать накладную'
     statement_date = models.DateField(verbose_name='Дата')
     statement_start_time = models.TimeField(verbose_name='Начало')

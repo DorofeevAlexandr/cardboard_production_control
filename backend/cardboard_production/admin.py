@@ -155,9 +155,9 @@ class CuttingCardboardAdmin(admin.ModelAdmin):
 @admin.register(Statement)
 class StatementAdmin(admin.ModelAdmin):
     # Отображение полей в списке
-    fields = ('statement_date', 'order', 'statement_start_time',
+    fields = ('statement_date', 'order', 'order_status', 'statement_start_time',
               'statement_end_time', 'downtime', 'quantity_sent_production', 'quantity_manufactured')
-    list_display = ('statement_date', 'export_statement', 'order',
+    list_display = ('statement_date', 'export_statement', 'export_invoice', 'order',
                     'color_count', 'stamp',
                     # 'width', 'length',
                     'area',
@@ -258,6 +258,12 @@ class StatementAdmin(admin.ModelAdmin):
     def export_statement(self, statement: Statement):
         if statement.statement_date:
             return mark_safe(f"<a href='/download_statement/{statement.statement_date}/'target='_self'><&#128194;></a>")
+        return "-"
+
+    @admin.display(description="Накладная", ordering='statement_date')
+    def export_invoice(self, statement: Statement):
+        if statement.statement_date and statement.order_status==Productions.Status.MANUFACTURED:
+            return mark_safe(f"<a href='/download_invoice/{statement.statement_date}/'target='_self'><&#128194;></a>")
         return "-"
 
 
