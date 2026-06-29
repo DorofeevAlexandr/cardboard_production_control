@@ -156,6 +156,10 @@ class CuttingCardboard(UUIDMixin, TimeStampedMixin):
 
 
 class Statement(UUIDMixin, TimeStampedMixin):
+    class Status(models.IntegerChoices):
+        IN_THE_QUEUE  = 0, 'В очереди'
+        IS_IN_PRODUCTION = 1, 'В производстве'
+        MANUFACTURED = 2, 'Печатать накладную'
     statement_date = models.DateField(verbose_name='Дата')
     statement_start_time = models.TimeField(verbose_name='Начало')
     statement_end_time = models.TimeField(verbose_name='Окончание')
@@ -163,6 +167,8 @@ class Statement(UUIDMixin, TimeStampedMixin):
     order = models.ForeignKey('Order', verbose_name='Продукция', on_delete=models.CASCADE, related_name='statement_order')
     quantity_sent_production = models.IntegerField(verbose_name='Пропущено', validators=[MinValueValidator(0)], default=0)
     quantity_manufactured = models.IntegerField(verbose_name='Изготовлено',  validators=[MinValueValidator(0)], default=0)
+    order_status = models.IntegerField(choices=Status.choices,
+                                       default=Status.IN_THE_QUEUE, verbose_name="Накладная")
 
     def __str__(self):
         return f'{self.statement_date} - {self.order}'
