@@ -1,6 +1,9 @@
 import datetime as dt
 from pprint import pprint
-
+import docx
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.section import WD_ORIENT
+from docx.shared import Mm, Pt
 import xlsxwriter
 
 from .models import Statement
@@ -169,3 +172,22 @@ def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
     ws.set_paper(9)
     ws.set_landscape()
     ws.fit_to_pages(1, 1)
+
+
+def invoice_to_word(doc, invoice_date:str):
+    section = doc.sections[-1]
+    new_width, new_height = section.page_height, section.page_width
+    section.orientation = WD_ORIENT.LANDSCAPE
+    section.page_width = new_width
+    section.page_height = new_height
+
+    section.left_margin = Mm(25.4)
+    section.right_margin = Mm(5.4)
+    section.top_margin = Mm(5.4)
+    section.bottom_margin = Mm(5.4)
+
+    par0 = doc.add_paragraph('company_name')
+    par0.add_run(f'\nInvoice - {invoice_date}')
+    par0.paragraph_format.space_before = Mm(1)
+    par0.paragraph_format.space_after = Mm(1)
+    par0.alignment = WD_ALIGN_PARAGRAPH.CENTER

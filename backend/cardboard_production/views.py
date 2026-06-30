@@ -1,4 +1,5 @@
 import datetime as  dt
+import docx
 from django.shortcuts import render, redirect
 from django.http import (HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect,
                          HttpResponsePermanentRedirect, FileResponse)
@@ -9,8 +10,7 @@ import xlsxwriter
 from .forms import ReadDateForElectroCounters, ReadMonthForElectroCounters
 from .work_with_electrocouners import (get_counters_from_base, client_influxdb, read_electro_counters_values,
                                        get_reports_electro_counters, calculate_result_value, save_report_in_excel)
-from .work_with_excel import statement_to_excel
-
+from .work_with_office_document import statement_to_excel, invoice_to_word
 
 menu = [{'title': "Показания счетчиков", 'url_name': 'electro_counters'},
         {'title': "Данные за день", 'url_name': 'electro_counters_statistics_for_the_day'},
@@ -170,15 +170,12 @@ def download_statement(request, statement_date:str):
 
 def download_invoice(request, invoice_date:str):
     output = io.BytesIO()
-    workbook = xlsxwriter.Workbook(output)
-
-    statement_to_excel(workbook, invoice_date)
-
-    workbook.close()
+    doc = docx.Document()
+    invoice_to_word(doc, invoice_date)
+    doc.save(output)
     output.seek(0)
-
     response = HttpResponse(output.read(),
                             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                             )
-    response['Content-Disposition'] = f'attachment; filename=Invoice_{invoice_date.replace('-','_')}.xlsx'
+    response['Content-Disposition'] = f'attachment; filename=Invoice_{invoice_date.replace('-','_')}.docx'
     return response
