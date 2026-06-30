@@ -6,7 +6,7 @@ from docx.enum.section import WD_ORIENT
 from docx.shared import Mm, Pt
 import xlsxwriter
 
-from .models import Statement
+from .models import Statement, Productions
 
 
 def get_working_minutes(product: Statement):
@@ -185,9 +185,41 @@ def invoice_to_word(doc, invoice_date:str):
     section.right_margin = Mm(5.4)
     section.top_margin = Mm(5.4)
     section.bottom_margin = Mm(5.4)
+    #
+    # par0.paragraph_format.space_before = Mm(1)
+    # par0.paragraph_format.space_after = Mm(1)
 
-    par0 = doc.add_paragraph('company_name')
-    par0.add_run(f'\nInvoice - {invoice_date}')
-    par0.paragraph_format.space_before = Mm(1)
-    par0.paragraph_format.space_after = Mm(1)
-    par0.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    # Данные для подстановки
+    par0 = doc.add_paragraph(f'{invoice_date} г.')
+    par1 = doc.add_paragraph(f'Накладная №_______________')
+    par1.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    par2 = doc.add_paragraph(f'От цеха по изготовлению упаковки')
+    par2.add_run(f'\nВ склад готовой продукции')
+
+    # Создание таблицы для позиций
+    table = doc.add_table(rows=1, cols=5)
+    table.cell(0, 0).text = 'S'
+    table.cell(0, 1).text = '№'
+    table.cell(0, 2).text = 'Наименование \nпродукции'
+    table.cell(0, 3).text = 'Печать'
+    table.cell(0, 4).text = 'Количество'
+    table.cell(0, 2).bold = True  # Выделяем жирным название колонки
+
+    # Заполнение таблицы данными
+    products = Statement.objects.filter(statement_date=invoice_date).order_by('statement_start_time')
+    n = 0
+    for product in products:
+        if product.order_status == Productions.Status.MANUFACTURED:
+            n += 1
+            row_cells = table.add_row().cells
+            row_cells[0].text = str(manufactured_area(product))
+            row_cells[1].text = str(n)
+            row_cells[2].text = str(product.order.name)
+            row_cells[3].text = str('+' if product.order.stamp else '-')
+            row_cells[4].text = str(product.quantity_manufactured)
+
+    for _ in range(21 - n):
+        table.add_row()
+
+    par_end = doc.add_paragraph(f'Сдал_____________           Принял_____________')
+    par_end.alignment = WD_ALIGN_PARAGRAPH.CENTER
