@@ -174,6 +174,19 @@ def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
     ws.fit_to_pages(1, 1)
 
 
+def set_font_style_table_row(table_row, font_size=12, bold=False, align_center=False):
+    for cell in table_row.cells:
+        # Для каждого абзаза в ячейке
+        for paragraph in cell.paragraphs:
+            if align_center:
+                paragraph.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            # Для каждого фрагмент текста в абзаце
+            for run in paragraph.runs:
+                # Делаем шрифт жирным
+                run.font.bold = bold
+                run.font.size = Pt(font_size)
+
+
 def invoice_to_word(doc, invoice_date:str):
     section = doc.sections[-1]
     section.orientation = WD_ORIENT.LANDSCAPE
@@ -213,7 +226,7 @@ def invoice_to_word(doc, invoice_date:str):
     table.cell(0, 2).text = 'Наименование \nпродукции'
     table.cell(0, 3).text = 'Печать'
     table.cell(0, 4).text = 'Количество'
-    table.cell(0, 2).bold = True  # Выделяем жирным название колонки
+    set_font_style_table_row(table.rows[0], font_size=10, bold=True, align_center=True)
 
     # Заполнение таблицы данными
     products = Statement.objects.filter(statement_date=invoice_date).order_by('statement_start_time')
