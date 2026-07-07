@@ -197,6 +197,17 @@ def invoice_to_word(doc, invoice_date:str):
 
     # Создание таблицы для позиций
     table = doc.add_table(rows=1, cols=5)
+    table.autofit = False
+    table.allow_autofit = False
+    table.style = 'Table Grid'
+    # table.width = Mm(131.3)
+
+    table.columns[0].width = Mm(20)
+    table.columns[1].width = Mm(10)
+    table.columns[2].width = Mm(70)
+    table.columns[3].width = Mm(20)
+    table.columns[4].width = Mm(20)
+
     table.cell(0, 0).text = 'S'
     table.cell(0, 1).text = '№'
     table.cell(0, 2).text = 'Наименование \nпродукции'
