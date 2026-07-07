@@ -203,10 +203,14 @@ def invoice_to_word(doc, invoice_date:str):
 
     # Данные для подстановки
     par0 = doc.add_paragraph(f'{invoice_date} г.')
+    par0.runs[0].font.size = Pt(12)
     par1 = doc.add_paragraph(f'Накладная №_______________')
+    par1.runs[0].font.size = Pt(18)
     par1.alignment = WD_ALIGN_PARAGRAPH.CENTER
     par2 = doc.add_paragraph(f'От цеха по изготовлению упаковки')
     par2.add_run(f'\nВ склад готовой продукции')
+    par2.runs[0].font.size = Pt(12)
+    par2.runs[1].font.size = Pt(12)
 
     # Создание таблицы для позиций
     table = doc.add_table(rows=1, cols=5)
@@ -234,7 +238,9 @@ def invoice_to_word(doc, invoice_date:str):
     for product in products:
         if product.order_status == Productions.Status.MANUFACTURED:
             n += 1
-            row_cells = table.add_row().cells
+            row = table.add_row()
+            set_font_style_table_row(row, font_size=12, bold=False, align_center=False)
+            row_cells = row.cells
             row_cells[0].text = str(manufactured_area(product))
             row_cells[1].text = str(n)
             row_cells[2].text = str(product.order.name)
@@ -244,5 +250,7 @@ def invoice_to_word(doc, invoice_date:str):
     for _ in range(21 - n):
         table.add_row()
 
+    doc.add_paragraph('')
     par_end = doc.add_paragraph(f'Сдал_____________           Принял_____________')
     par_end.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    par_end.runs[0].font.size = Pt(12)
