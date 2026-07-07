@@ -176,15 +176,14 @@ def statement_to_excel(workbook:xlsxwriter.Workbook, statement_date:str):
 
 def invoice_to_word(doc, invoice_date:str):
     section = doc.sections[-1]
-    new_width, new_height = section.page_height, section.page_width
     section.orientation = WD_ORIENT.LANDSCAPE
-    section.page_width = new_width
-    section.page_height = new_height
+    section.page_width = Mm(297)
+    section.page_height = Mm(210)
 
-    section.left_margin = Mm(25.4)
-    section.right_margin = Mm(5.4)
-    section.top_margin = Mm(5.4)
-    section.bottom_margin = Mm(5.4)
+    section.left_margin = Mm(10)
+    section.right_margin = Mm(154)
+    section.top_margin = Mm(5)
+    section.bottom_margin = Mm(5)
     #
     # par0.paragraph_format.space_before = Mm(1)
     # par0.paragraph_format.space_after = Mm(1)
