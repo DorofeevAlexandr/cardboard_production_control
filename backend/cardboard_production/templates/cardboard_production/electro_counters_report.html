@@ -15,7 +15,7 @@
     <div class="tabs">
      {% for client_name in reports.keys %}
         <input type="radio" name="inset" value="" id="tab_{{forloop.counter}}" checked>
-        <label for="tab_{{forloop.counter}}">{{forloop.counter}} - {{client_name}}</label>
+        <label for="tab_{{forloop.counter}}">{{client_name}}</label>
      {% endfor %}
 
         {% for client_name, counter_values in reports.items %}
