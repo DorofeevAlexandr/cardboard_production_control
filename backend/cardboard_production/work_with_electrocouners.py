@@ -13,6 +13,14 @@ import xlsxwriter
 from.models import ElectroCounters
 
 
+def get_counters_params():
+    counters_names = {}
+    counters = ElectroCounters.objects.order_by('number')
+    for c in counters:
+        counters_names[c.number] = c.client_name
+    return counters_names
+
+
 def get_counters_from_base():
     res_counters = []
     counters = ElectroCounters.objects.order_by('number')
@@ -142,9 +150,20 @@ def get_time_period(date: dt.date, data_reading_period='1 day', st_step_time='1h
     return time_start, time_end
 
 
+def get_counter_number(counter_st_number:str)->int:
+    st_number = counter_st_number[-1]
+    try:
+        number = int(st_number)
+    except ValueError:
+        number = 0
+    return  number
+
+
 def parse_electro_counters_values(tables):
     times = {}
     values = {}
+    counters_params = get_counters_params()
+    print(counters_params)
     for table in tables:
         for record in table.records:
             # print('--------------')
@@ -159,8 +178,9 @@ def parse_electro_counters_values(tables):
 
             if measurement_time not in times.keys():
                 times[measurement_time] = {}
-
-            client_name = record['client_name']
+            counter_number = get_counter_number(record['_measurement'])
+            # print(counter_number)
+            client_name = f'{counter_number} - {counters_params[counter_number]}'
             if client_name not in values.keys():
                 values[client_name] = {'count_val' : [],
                                        'times' : [],
