@@ -17,7 +17,13 @@ def get_counters_params():
     counters_names = {}
     counters = ElectroCounters.objects.order_by('number')
     for c in counters:
-        counters_names[c.number] = c.client_name
+        counters_names[c.number] = {
+                          'client_name': c.client_name,
+                          'address': c.address,
+                          'transformation_coefficient': c.transformation_coefficient,
+                          'energy_indic': str(c.energy_indic / 1000),
+                          'energy': str(c.energy / 1000),
+                          }
     return counters_names
 
 
@@ -180,7 +186,7 @@ def parse_electro_counters_values(tables):
                 times[measurement_time] = {}
             counter_number = get_counter_number(record['_measurement'])
             # print(counter_number)
-            client_name = f'{counter_number} - {counters_params[counter_number]}'
+            client_name = f'{counter_number} - {counters_params[counter_number]['client_name']}'
             if client_name not in values.keys():
                 values[client_name] = {'count_val' : [],
                                        'times' : [],
@@ -188,7 +194,7 @@ def parse_electro_counters_values(tables):
                                        }
                 # print(client_name)
 
-            values[client_name]['count_val'].append(record['_value'])
+            values[client_name]['count_val'].append(record['_value'] * counters_params[counter_number]['transformation_coefficient'])
             values[client_name]['times'].append(measurement_time)
 
     return times, values
@@ -206,7 +212,7 @@ def read_electro_counters_values(client, date: dt.date, data_reading_period='1 d
      |> range(start: {st_time_start}, stop: {st_time_end})
      |> aggregateWindow(every: {st_step_time}, fn: max, createEmpty: false)
      |> group(columns: ["_time"])
-     |> filter(fn: (r) => r._field == "energy")"""
+     |> filter(fn: (r) => r._field == "energy_indic")"""
     # print(query)
 
 
