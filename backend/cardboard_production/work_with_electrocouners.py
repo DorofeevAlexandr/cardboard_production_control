@@ -169,7 +169,7 @@ def parse_electro_counters_values(tables):
     times = {}
     values = {}
     counters_params = get_counters_params()
-    print(counters_params)
+    # print(counters_params)
     for table in tables:
         for record in table.records:
             # print('--------------')
@@ -186,6 +186,8 @@ def parse_electro_counters_values(tables):
                 times[measurement_time] = {}
             counter_number = get_counter_number(record['_measurement'])
             # print(counter_number)
+            if counter_number == 0:
+                continue
             client_name = f'{counter_number} - {counters_params[counter_number]['client_name']}'
             if client_name not in values.keys():
                 values[client_name] = {'count_val' : [],
