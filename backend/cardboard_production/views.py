@@ -1,10 +1,12 @@
 import datetime as  dt
 import docx
+from dotenv import load_dotenv
 from django.shortcuts import render, redirect
 from django.http import (HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect,
                          HttpResponsePermanentRedirect, FileResponse)
 import io
 import mimetypes
+import os
 import xlsxwriter
 
 from .forms import ReadDateForElectroCounters, ReadMonthForElectroCounters
@@ -12,21 +14,35 @@ from .work_with_electrocouners import (get_counters_from_base, client_influxdb, 
                                        get_reports_electro_counters, calculate_result_value, save_report_in_excel)
 from .work_with_office_document import statement_to_excel, invoice_to_word
 
+
+load_dotenv()
+ADDITIONAL_DEPARTMENT_PATH = os.environ.get("ADDITIONAL_DEPARTMENT_PATH")
+ADDITIONAL_DEPARTMENT_NAME = os.environ.get("ADDITIONAL_DEPARTMENT_NAME")
+
+
 menu = [{'title': "Показания счетчиков", 'url_name': 'electro_counters'},
         {'title': "Данные за день", 'url_name': 'electro_counters_statistics_for_the_day'},
         {'title': "Данные за месяц", 'url_name': 'electro_counters_statistics_for_the_month'},
         {'title': "Отчеты", 'url_name': 'reports'},
+        {'title': ADDITIONAL_DEPARTMENT_NAME, 'url_name': 'additional_department_path'},
         {'title': "Настройка", 'url_name': 'tuning'},
 ]
 
 def tuning(request):
     return HttpResponse("<h1>Tuning</h1>")
 
+
 def index(request):
     return redirect('/admin')
 
+
 def page_not_found(request, exception):
     return HttpResponseNotFound("<h1>Страница не найдена</h1>")
+
+
+def go_additional_department(request):
+    return redirect(ADDITIONAL_DEPARTMENT_PATH)
+
 
 def open_pdf_file_view(request, filename):
     mimetype = mimetypes.guess_type(filename)

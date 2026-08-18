@@ -12,6 +12,8 @@ urlpatterns = [
          name='electro_counters_statistics_for_the_month'),
     path('reports_month', views.reports_for_the_month,
          name='reports'),
+    path('additional_department_path', views.go_additional_department,
+         name='additional_department_path'),
     path('tuning', views.tuning, name='tuning'),
     path('open_pdf_file_view/<path:filename>/', views.open_pdf_file_view, name='open_pdf_file_view'),
     path('download_statement/<path:statement_date>/', views.download_statement, name='download_statement'),
